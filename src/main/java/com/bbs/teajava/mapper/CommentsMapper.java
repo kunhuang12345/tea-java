@@ -2,7 +2,6 @@ package com.bbs.teajava.mapper;
 
 import com.bbs.teajava.entity.Comments;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import org.apache.ibatis.annotations.Mapper;
 
 /**
  * <p>

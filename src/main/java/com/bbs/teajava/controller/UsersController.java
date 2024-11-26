@@ -1,21 +1,18 @@
 package com.bbs.teajava.controller;
 
 
-import com.bbs.teajava.entity.Users;
 import com.bbs.teajava.service.IUsersService;
 import com.bbs.teajava.utils.ApiResultUtils;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
-
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
 
 /**
  * <p>
- *  前端控制器
+ * 用户类
  * </p>
  *
  * @author hk
@@ -26,9 +23,10 @@ import java.util.List;
 public class UsersController {
     @Autowired
     private IUsersService usersService;
-    @RequestMapping("/getAllUsers")
+
+    @RequestMapping(value = "/getAllUsers", method = {RequestMethod.GET, RequestMethod.POST})
     @ApiResponse(description = "获取所有用户信息")
-    public Object getAllUsers(@RequestParam("value") String name) {
+    public Object getAllUsers() {
         return ApiResultUtils.success(usersService.getAllUsers());
     }
 

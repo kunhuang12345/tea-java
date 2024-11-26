@@ -2,6 +2,10 @@ package com.bbs.teajava.mapper;
 
 import com.bbs.teajava.entity.Papers;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
+
+import java.util.List;
 
 /**
  * <p>
@@ -13,4 +17,6 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  */
 public interface PapersMapper extends BaseMapper<Papers> {
 
+    @Select("select * from papers")
+    List<Papers> getAllPapers();
 }
