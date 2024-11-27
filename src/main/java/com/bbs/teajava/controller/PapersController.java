@@ -1,7 +1,7 @@
 package com.bbs.teajava.controller;
 
 
-import com.bbs.teajava.annotation.ParamCheck;
+import com.bbs.teajava.annotation.Authentication;
 import com.bbs.teajava.entity.Papers;
 import com.bbs.teajava.service.IPapersService;
 import com.bbs.teajava.utils.ApiResultUtils;
@@ -34,7 +34,7 @@ public class PapersController {
 
     @RequestMapping(value = "uploadPapers", method = {RequestMethod.POST})
     @ApiResponse(description = "上传论文(返回保存行数)")
-    @ParamCheck
+    @Authentication
     public Object uploadPapers(@ModelAttribute List<Papers> papers) {
         return papersService.uploadPapers(papers);
     }
