@@ -47,6 +47,12 @@ spring:
             required: true
           socketFactory:
             class: javax.net.ssl.SSLSocketFactory  # 使用SSL
+  servlet:
+    multipart:
+      max-file-size: 50MB
+      max-request-size: 55MB
+      enabled: true
+
 server:
   port: 8080
   servlet:
@@ -56,3 +62,15 @@ server:
       force: true
   tomcat:
     uri-encoding: UTF-8
+
+
+# minio 配置
+minio:
+  endpoint: http://localhost:9000
+  accessKey: admin
+  secretKey: 12345678
+  buckets:
+    - name: attachment
+      policy: read-write    # 可选：桶的权限策略
+    - name: temp # 临时文件
+      policy: read-write
