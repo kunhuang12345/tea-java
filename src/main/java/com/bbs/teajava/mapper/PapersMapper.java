@@ -19,4 +19,5 @@ public interface PapersMapper extends BaseMapper<Papers> {
 
     @Select("select * from papers")
     List<Papers> getAllPapers();
+
 }

@@ -14,4 +14,6 @@ public class SessionUtils {
         return attrs.getRequest().getSession();
     }
 
+    private SessionUtils() {}
+
 }

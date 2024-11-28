@@ -2,10 +2,10 @@ package com.bbs.teajava.utils;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
 
@@ -13,17 +13,30 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * @author kunhuang
+ */
 @Component
+@RequiredArgsConstructor
 public class RedisUtil {
-    @Autowired
-    private StringRedisTemplate stringRedisTemplate;
-
-    @Autowired
-    private ObjectMapper objectMapper; // Jackson
+    private final StringRedisTemplate stringRedisTemplate;
+    private final ObjectMapper objectMapper; // 使用Jackson
     private final Logger logger = LoggerFactory.getLogger(RedisUtil.class);
+
+    /**
+     * 从redis中删除指定元素
+     *
+     * @param key Redis键
+     */
+    public Boolean delete(String key) {
+        return stringRedisTemplate.delete(key);
+    }
 
     public void set(String key, String value) {
         stringRedisTemplate.opsForValue().set(key, value);
+    }
+    public void set(String key, String value, long timeout, TimeUnit timeUnit) {
+        stringRedisTemplate.opsForValue().set(key, value, timeout, timeUnit);
     }
     public String get(String key) {
         return stringRedisTemplate.opsForValue().get(key);
@@ -222,5 +235,6 @@ public class RedisUtil {
     public String rightPop(String key) {
         return stringRedisTemplate.opsForList().rightPop(key);
     }
+
 
 }

@@ -72,5 +72,5 @@ minio:
   buckets:
     - name: attachment
       policy: read-write    # 可选：桶的权限策略
-    - name: temp # 临时文件
+    - name: temp           # 临时文件
       policy: read-write
