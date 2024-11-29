@@ -8,7 +8,7 @@ import java.util.List;
 
 /**
  * <p>
- *  服务类
+ * 服务类
  * </p>
  *
  * @author hk
@@ -22,7 +22,7 @@ public interface IUsersService extends IService<Users> {
      * 发送邮件验证码
      *
      * @param targetEmail 来源邮箱信息
-     * @param checkCode 图片验证码检验
+     * @param checkCode   图片验证码检验
      * @param subject     邮件标题
      * @param content     邮件内容
      * @return 发送状态
@@ -39,7 +39,7 @@ public interface IUsersService extends IService<Users> {
     /**
      * 注册用户
      *
-     * @param username 用户名
+     * @param username  用户名
      * @param email     邮箱
      * @param password  密码
      * @param emailCode 邮箱验证码
@@ -50,7 +50,7 @@ public interface IUsersService extends IService<Users> {
     /**
      * 用户登录
      *
-     * @param email 登录邮箱
+     * @param email    登录邮箱
      * @param password 登录密码
      * @return 登录结果
      */
@@ -62,4 +62,14 @@ public interface IUsersService extends IService<Users> {
      * @return 注销结果
      */
     ApiResultUtils userLogout();
+
+    /**
+     * 修改用户密码(限制每7天3次)
+     *
+     * @param email       邮箱
+     * @param oldPassword 旧密码
+     * @param newPassword 新密码
+     * @return 修改结果
+     */
+    ApiResultUtils userAlterPassword(String email, String oldPassword, String newPassword);
 }

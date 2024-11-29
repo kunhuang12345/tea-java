@@ -1,5 +1,6 @@
 package com.bbs.teajava.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.bbs.teajava.config.ParamConfig;
 import com.bbs.teajava.constants.RoleEnum;
 import com.bbs.teajava.entity.Users;
@@ -15,6 +16,7 @@ import jakarta.mail.internet.MimeMessage;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -193,6 +195,36 @@ public class UsersServiceImpl extends ServiceImpl<UsersMapper, Users> implements
             return ApiResultUtils.success("退出成功");
         }
         return ApiResultUtils.error(400, "您尚未登录");
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public ApiResultUtils userAlterPassword(String email, String oldPassword, String newPassword) {
+        QueryWrapper<Users> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("email", email);
+        Users user = usersMapper.selectOne(queryWrapper);
+        if (user == null) {
+            return ApiResultUtils.error(400, "用户不存在");
+        }
+        String alterCount = redis.get(email + "AlterPassword");
+        if (StringUtils.isNotEmpty(alterCount) && Integer.parseInt(alterCount) >2) {
+            return ApiResultUtils.error(400, "本周内密码修改次数超过三次！");
+        }
+        if (!passwordEncoder.matches(oldPassword, user.getPassword())) {
+            return ApiResultUtils.error(400, "旧密码错误");
+        }
+        List<String> validated = this.validatePassword(newPassword);
+        if (CollectionUtils.isNotEmpty(validated)) {
+            return ApiResultUtils.error(400, validated.toString());
+        }
+        user.setPassword(passwordEncoder.encode(newPassword));
+        usersMapper.updateById(user);
+        if (StringUtils.isEmpty(alterCount)) {
+            redis.set(email + "AlterPassword", "1", 7, TimeUnit.DAYS);
+        } else {
+            redis.set(email + "AlterPassword", String.valueOf(Integer.parseInt(alterCount) + 1), 7, TimeUnit.DAYS);
+        }
+        return ApiResultUtils.success("密码修改成功");
     }
 
     /**

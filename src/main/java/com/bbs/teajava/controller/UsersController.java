@@ -61,11 +61,19 @@ public class UsersController {
                                     @RequestParam(value = "password") String password) {
         return usersService.userLogin(email, password);
     }
-    
+
     @RequestMapping(value = "UserLogout", method = {RequestMethod.POST})
     @ApiResponse(description = "用户注销")
     public ApiResultUtils userLogout() {
         return usersService.userLogout();
+    }
+
+    @RequestMapping(value = "UserAlterPassword", method = {RequestMethod.POST})
+    @ApiResponse(description = "修改密码(每7天限制修改三次)")
+    public ApiResultUtils userAlterPassword(@RequestParam(value = "email") String email,
+                                    @RequestParam(value = "oldPassword") String oldPassword,
+                                    @RequestParam(value = "newPassword") String newPassword) {
+        return usersService.userAlterPassword(email, oldPassword, newPassword);
     }
 
 }
