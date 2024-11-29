@@ -1,5 +1,9 @@
 package com.bbs.teajava.constants;
 
+/**
+ * @author kunhuang
+ */
+
 public enum RoleEnum {
     // 普通用户
     USER(1),

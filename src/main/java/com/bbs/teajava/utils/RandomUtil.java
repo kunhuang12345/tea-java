@@ -8,6 +8,9 @@ import java.util.Random;
 public class RandomUtil {
     private static Random random;
 
+    private RandomUtil() {
+    }
+
     public static Random getRandom() {
         if (random == null) {
             random = new Random();

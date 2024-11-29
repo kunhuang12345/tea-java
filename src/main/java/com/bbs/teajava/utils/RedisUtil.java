@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
 
@@ -28,8 +29,8 @@ public class RedisUtil {
      *
      * @param key Redis键
      */
-    public Boolean delete(String key) {
-        return stringRedisTemplate.delete(key);
+    public void delete(String key) {
+        stringRedisTemplate.delete(key);
     }
 
     public void set(String key, String value) {

@@ -9,8 +9,10 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.bbs.teajava.utils.ApiResultUtils;
 import com.bbs.teajava.utils.RandomUtil;
 import com.bbs.teajava.utils.RedisUtil;
+import com.bbs.teajava.utils.SessionUtils;
 import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
@@ -161,10 +163,32 @@ public class UsersServiceImpl extends ServiceImpl<UsersMapper, Users> implements
 
     @Override
     public ApiResultUtils userLogin(String email, String password) {
-        // TODO 用户登录
-        return null;
+        HttpSession session = SessionUtils.getSession();
+        String sessionId = session.getId();
+        Users userInSession = (Users) session.getAttribute(sessionId);
+        if (userInSession != null) {
+            return ApiResultUtils.error(400, "您已登录，请勿重复登录");
+        }
+        HashMap<String, Object> selectMap = new HashMap<>();
+        selectMap.put("email", email);
+        List<Users> users = usersMapper.selectByMap(selectMap);
+        if (CollectionUtils.isEmpty(users)) {
+            return ApiResultUtils.error(400, "用户未注册！");
+        }
+        Users user = users.get(0);
+        if (!passwordEncoder.matches(password, user.getPassword())) {
+            return ApiResultUtils.error(400, "密码错误");
+        }
+        session.setAttribute(sessionId, user);
+        return ApiResultUtils.success("登录成功");
     }
 
+    /**
+     * 密码合格校验
+     *
+     * @param password 密码
+     * @return 错误信息列表
+     */
     private List<String> validatePassword(String password) {
         List<String> validationErrors = new ArrayList<>();
 
