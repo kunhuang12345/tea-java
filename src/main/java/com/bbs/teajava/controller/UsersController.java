@@ -61,5 +61,11 @@ public class UsersController {
                                     @RequestParam(value = "password") String password) {
         return usersService.userLogin(email, password);
     }
+    
+    @RequestMapping(value = "UserLogout", method = {RequestMethod.POST})
+    @ApiResponse(description = "用户注销")
+    public ApiResultUtils userLogout() {
+        return usersService.userLogout();
+    }
 
 }

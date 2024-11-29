@@ -55,4 +55,11 @@ public interface IUsersService extends IService<Users> {
      * @return 登录结果
      */
     ApiResultUtils userLogin(String email, String password);
+
+    /**
+     * 用户注销
+     *
+     * @return 注销结果
+     */
+    ApiResultUtils userLogout();
 }

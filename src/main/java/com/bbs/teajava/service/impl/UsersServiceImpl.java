@@ -183,6 +183,18 @@ public class UsersServiceImpl extends ServiceImpl<UsersMapper, Users> implements
         return ApiResultUtils.success("登录成功");
     }
 
+    @Override
+    public ApiResultUtils userLogout() {
+        HttpSession session = SessionUtils.getSession();
+        String sessionId = session.getId();
+        Users userInSession = (Users) session.getAttribute(sessionId);
+        if (userInSession != null) {
+            session.removeAttribute(sessionId);
+            return ApiResultUtils.success("退出成功");
+        }
+        return ApiResultUtils.error(400, "您尚未登录");
+    }
+
     /**
      * 密码合格校验
      *
