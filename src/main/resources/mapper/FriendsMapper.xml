@@ -4,7 +4,7 @@
 
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.bbs.teajava.entity.Friends">
-        <id column="user_id" property="userId" />
+        <result column="user_id" property="userId" />
         <result column="friend_id" property="friendId" />
     </resultMap>
 

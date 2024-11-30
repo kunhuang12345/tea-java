@@ -6,6 +6,7 @@ import com.bbs.teajava.constants.BucketNameEnum;
 import com.bbs.teajava.constants.RoleEnum;
 import com.bbs.teajava.entity.Papers;
 import com.bbs.teajava.entity.Users;
+import com.bbs.teajava.entity.dto.PaperResultDto;
 import com.bbs.teajava.mapper.PapersMapper;
 import com.bbs.teajava.service.IPapersService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -14,6 +15,7 @@ import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
@@ -21,6 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -41,8 +44,15 @@ public class PapersServiceImpl extends ServiceImpl<PapersMapper, Papers> impleme
     Logger logger = LoggerFactory.getLogger(PapersServiceImpl.class);
 
     @Override
-    public List<Papers> getAllPapers() {
-        return papersMapper.selectList(new QueryWrapper<>());
+    public List<PaperResultDto> getAllPapers() {
+        List<Papers> papersList = papersMapper.selectList(new QueryWrapper<>());
+        PaperResultDto dto = new PaperResultDto();
+        List<PaperResultDto> dtoList = new ArrayList<>();
+        for (Papers paper : papersList) {
+            BeanUtils.copyProperties(paper, dto);
+            dtoList.add(dto);
+        }
+        return dtoList;
     }
 
     @Override

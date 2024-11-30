@@ -2,6 +2,7 @@ package com.bbs.teajava.service;
 
 import com.bbs.teajava.entity.Papers;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.bbs.teajava.entity.dto.PaperResultDto;
 import com.bbs.teajava.utils.ApiResultUtils;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -22,7 +23,7 @@ public interface IPapersService extends IService<Papers> {
      *
      * @return 所有论文列表
      */
-    List<Papers> getAllPapers();
+    List<PaperResultDto> getAllPapers();
 
     /**
      * 新增/修改论文
