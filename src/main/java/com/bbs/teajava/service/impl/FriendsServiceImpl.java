@@ -8,6 +8,7 @@ import com.bbs.teajava.mapper.FriendsMapper;
 import com.bbs.teajava.mapper.UsersMapper;
 import com.bbs.teajava.service.IFriendsService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.bbs.teajava.utils.ApiResultUtils;
 import com.bbs.teajava.utils.SessionUtils;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.collections.CollectionUtils;
@@ -72,5 +73,14 @@ public class FriendsServiceImpl extends ServiceImpl<FriendsMapper, Friends> impl
             dtoList.add(dto);
         }
         return dtoList;
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public ApiResultUtils deleteFriend(Integer friendId) {
+        Users user = SessionUtils.getUser();
+        int count = friendsMapper.delete(user.getId(), friendId);
+        int count1 = friendsMapper.delete(friendId, user.getId());
+        return ApiResultUtils.success(count + count1);
     }
 }

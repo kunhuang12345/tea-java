@@ -3,6 +3,7 @@ package com.bbs.teajava.service;
 import com.bbs.teajava.entity.Friends;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.bbs.teajava.entity.dto.UserResultDto;
+import com.bbs.teajava.utils.ApiResultUtils;
 
 import java.util.List;
 
@@ -29,4 +30,12 @@ public interface IFriendsService extends IService<Friends> {
      * @return 好友列表
      */
     List<UserResultDto> getAllFriendList();
+
+    /**
+     * 删除好友（双方解除关系）
+     *
+     * @param friendId 好友id
+     * @return 成功或失败
+     */
+    ApiResultUtils deleteFriend(Integer friendId);
 }

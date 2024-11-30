@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -32,6 +33,13 @@ public class FriendsController {
     @Authentication
     public ApiResultUtils getAllFriendList() {
         return ApiResultUtils.success(friendsService.getAllFriendList());
+    }
+
+    @RequestMapping(value = "DeleteFriend", method = {RequestMethod.POST})
+    @ApiResponse(description = "删除好友")
+    @Authentication
+    public ApiResultUtils deleteFriend(@RequestParam(value = "friendId") Integer friendId) {
+        return friendsService.deleteFriend(friendId);
     }
 
 }
