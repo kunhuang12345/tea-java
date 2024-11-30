@@ -32,4 +32,11 @@ public interface IFriendRequestsService extends IService<FriendRequests> {
      * @return 好友申请列表
      */
     List<FriendRequestsResultDto> getApplyFriendList();
+
+    /**
+     * 获取收到的好友申请列表
+     *
+     * @return 收到的好友申请列表
+     */
+    List<FriendRequestsResultDto> getReceivedApplyList();
 }

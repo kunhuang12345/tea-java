@@ -23,7 +23,7 @@ import java.util.List;
 
 /**
  * <p>
- *  服务实现类
+ * 服务实现类
  * </p>
  *
  * @author hk
@@ -58,10 +58,22 @@ public class FriendRequestsServiceImpl extends ServiceImpl<FriendRequestsMapper,
     public List<FriendRequestsResultDto> getApplyFriendList() {
         HttpSession session = SessionUtils.getSession();
         Users user = (Users) session.getAttribute(session.getId());
-
         QueryWrapper<FriendRequests> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("from_user_id", user.getId());
-        List<FriendRequests> friendRequestList = friendRequestsMapper.selectList(queryWrapper);
+        return this.getFriendApplyList(queryWrapper);
+    }
+
+    @Override
+    public List<FriendRequestsResultDto> getReceivedApplyList() {
+        HttpSession session = SessionUtils.getSession();
+        Users user = (Users) session.getAttribute(session.getId());
+        QueryWrapper<FriendRequests> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("from_user_id", user.getId());
+        return this.getFriendApplyList(queryWrapper);
+    }
+
+    private List<FriendRequestsResultDto> getFriendApplyList(QueryWrapper<FriendRequests> wrapper) {
+        List<FriendRequests> friendRequestList = friendRequestsMapper.selectList(wrapper);
         List<FriendRequestsResultDto> dtoList = new ArrayList<>();
         for (FriendRequests e : friendRequestList) {
             FriendRequestsResultDto dto = new FriendRequestsResultDto();
