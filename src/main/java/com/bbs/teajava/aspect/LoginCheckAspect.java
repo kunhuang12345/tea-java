@@ -3,6 +3,7 @@ package com.bbs.teajava.aspect;
 import com.bbs.teajava.annotation.Authentication;
 import com.bbs.teajava.constants.RoleEnum;
 import com.bbs.teajava.entity.Users;
+import com.bbs.teajava.exception.AccessDeniedException;
 import com.bbs.teajava.exception.UnauthorizedException;
 import com.bbs.teajava.utils.RedisUtil;
 import com.bbs.teajava.utils.SessionUtils;
@@ -13,7 +14,6 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.springframework.stereotype.Component;
 
-import java.nio.file.AccessDeniedException;
 
 /**
  * @author kunhuang

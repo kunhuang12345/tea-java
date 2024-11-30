@@ -77,5 +77,5 @@ public interface IUsersService extends IService<Users> {
      * 会议报告人注册
      * @return 注册结果
      */
-    ApiResultUtils reporterRegister();
+    void reporterRegister(Integer id);
 }

@@ -31,4 +31,12 @@ public interface IReporterApplyService extends IService<ReporterApply> {
      * @return 上传结果
      */
     ApiResultUtils uploadTempFile(MultipartFile attachment);
+
+    /**
+     * 审核会议报告人注册申请
+     *
+     * @param id 申请人id
+     * @return 审核结果
+     */
+    ApiResultUtils approveRegister(Integer id);
 }

@@ -56,12 +56,6 @@ public class UsersController {
         return usersService.userRegister(username, email, password, emailCode);
     }
 
-    @RequestMapping(value = "ReporterRegister", method = {RequestMethod.POST})
-    @ApiResponse(description = "会议报告人注册")
-    @Authentication
-    public ApiResultUtils reporterRegister() {
-        return usersService.reporterRegister();
-    }
 
     @RequestMapping(value = "UserLogin", method = {RequestMethod.GET, RequestMethod.POST})
     @ApiResponse(description = "用户登录")

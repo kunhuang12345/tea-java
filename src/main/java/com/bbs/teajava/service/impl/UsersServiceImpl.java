@@ -1,5 +1,6 @@
 package com.bbs.teajava.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.bbs.teajava.config.ParamConfig;
 import com.bbs.teajava.constants.RoleEnum;
@@ -229,10 +230,8 @@ public class UsersServiceImpl extends ServiceImpl<UsersMapper, Users> implements
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public ApiResultUtils reporterRegister() {
-        // TODO 完成用户报告
-//        SessionUtils.getUser()
-        return null;
+    public void reporterRegister(Integer id) {
+        usersMapper.updateRole(id, RoleEnum.REPORTER.getValue());
     }
 
     /**

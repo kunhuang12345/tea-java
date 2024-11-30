@@ -35,6 +35,13 @@ public class ReporterApplyController {
                                            @RequestParam(value = "fileTag") Integer fileTag) {
         return reporterApplyService.reporterRegister(applyNote, fileTag);
     }
+    
+    @RequestMapping(value = "ApproveRegister", method = {RequestMethod.POST})
+    @ApiResponse(description = "审核会议报告人注册申请")
+    @Authentication(requireAdmin = true)
+    public ApiResultUtils approveRegister(@RequestParam(value = "id") Integer id) {
+        return reporterApplyService.approveRegister(id);
+    }
 
     @RequestMapping(value = "UploadTempFile", method = {RequestMethod.POST})
     @ApiResponse(description = "上传临时文件")

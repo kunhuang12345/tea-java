@@ -9,6 +9,7 @@ import com.bbs.teajava.entity.Users;
 import com.bbs.teajava.mapper.ReporterApplyMapper;
 import com.bbs.teajava.service.IReporterApplyService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.bbs.teajava.service.IUsersService;
 import com.bbs.teajava.utils.*;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
@@ -35,6 +36,7 @@ public class ReporterApplyServiceImpl extends ServiceImpl<ReporterApplyMapper, R
 
     private final ReporterApplyMapper reporterApplyMapper;
     private final MinioUtil minio;
+    private final IUsersService usersService;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -80,5 +82,18 @@ public class ReporterApplyServiceImpl extends ServiceImpl<ReporterApplyMapper, R
             log.error("临时文件上传失败", e);
             return ApiResultUtils.error(500, "临时文件上传失败");
         }
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public ApiResultUtils approveRegister(Integer id) {
+        ReporterApply reporterApply = reporterApplyMapper.selectById(id);
+        if (reporterApply == null) {
+            return ApiResultUtils.error(404, "记录不存在");
+        }
+        reporterApply.setStatus(ReporterApplyStatusEnum.AUDIT_PASS.getValue());
+        reporterApplyMapper.updateById(reporterApply);
+        usersService.reporterRegister(reporterApply.getUserId());
+        return ApiResultUtils.success();
     }
 }
