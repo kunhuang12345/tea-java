@@ -71,8 +71,8 @@ public class UsersController {
     @RequestMapping(value = "UserAlterPassword", method = {RequestMethod.POST})
     @ApiResponse(description = "修改密码(每7天限制修改三次)")
     public ApiResultUtils userAlterPassword(@RequestParam(value = "email") String email,
-                                    @RequestParam(value = "oldPassword") String oldPassword,
-                                    @RequestParam(value = "newPassword") String newPassword) {
+                                            @RequestParam(value = "oldPassword") String oldPassword,
+                                            @RequestParam(value = "newPassword") String newPassword) {
         return usersService.userAlterPassword(email, oldPassword, newPassword);
     }
 

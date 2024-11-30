@@ -2,10 +2,7 @@ package com.bbs.teajava.mapper;
 
 import com.bbs.teajava.entity.Papers;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
-
-import java.util.List;
+import org.apache.ibatis.annotations.Delete;
 
 /**
  * <p>
@@ -17,7 +14,7 @@ import java.util.List;
  */
 public interface PapersMapper extends BaseMapper<Papers> {
 
-    @Select("select * from papers")
-    List<Papers> getAllPapers();
+    @Delete("DELETE FROM papers WHERE deleted=1")
+    void clean();
 
 }

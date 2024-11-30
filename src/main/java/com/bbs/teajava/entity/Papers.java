@@ -1,11 +1,16 @@
 package com.bbs.teajava.entity;
 
+import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import lombok.Data;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.time.LocalDateTime;
 
 
 /**
@@ -17,6 +22,7 @@ import java.io.Serializable;
  * @since 2024-11-25
  */
 @TableName("papers")
+@Data
 public class Papers implements Serializable {
 
     @Serial
@@ -35,48 +41,16 @@ public class Papers implements Serializable {
 
     private Integer reporterId;
 
-    public Integer getId() {
-        return id;
-    }
+    private String paperPath;
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
-    public String getTitle() {
-        return title;
-    }
+    private String attachmentPath;
 
-    public void setTitle(String title) {
-        this.title = title;
-    }
-    public String getAuthor() {
-        return author;
-    }
+    @TableLogic
+    private Integer deleted;
 
-    public void setAuthor(String author) {
-        this.author = author;
-    }
-    public String getConference() {
-        return conference;
-    }
-
-    public void setConference(String conference) {
-        this.conference = conference;
-    }
-    public String getFile() {
-        return file;
-    }
-
-    public void setFile(String file) {
-        this.file = file;
-    }
-    public Integer getReporterId() {
-        return reporterId;
-    }
-
-    public void setReporterId(Integer reporterId) {
-        this.reporterId = reporterId;
-    }
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    private LocalDateTime deleteTime;
 
     @Override
     public String toString() {

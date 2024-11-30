@@ -1,13 +1,18 @@
 package com.bbs.teajava.utils;
 
-import io.minio.BucketExistsArgs;
-import io.minio.MakeBucketArgs;
-import io.minio.MinioClient;
-import io.minio.PutObjectArgs;
+import io.minio.*;
+import io.minio.messages.*;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.io.InputStream;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
+import java.util.Collections;
 
 /**
  * @author kunhuang
@@ -16,12 +21,13 @@ import java.io.InputStream;
 @RequiredArgsConstructor
 public class MinioUtil {
     private final MinioClient minioClient;
+    private final Logger logger = LoggerFactory.getLogger(getClass());
 
     /**
      * 上传文件前检查并创建桶
      *
-     * @param bucketName 桶名
-     * @param fileName 文件命
+     * @param bucketName  桶名
+     * @param fileName    文件命
      * @param inputStream 文件流
      */
     public void uploadFile(String bucketName, String fileName, InputStream inputStream) {
@@ -41,6 +47,115 @@ public class MinioUtil {
             throw new RuntimeException("上传失败", e);
         }
     }
+
+    /**
+     * 在 MinIO 服务器端复制对象
+     *
+     * @param sourceBucketName 来源桶
+     * @param targetBucketName 目标桶
+     * @param sourceFilePath   来源文件路径
+     * @param targetFilePath   目标文件路径
+     */
+    public void copyFile(String sourceBucketName, String targetBucketName, String sourceFilePath, String targetFilePath) {
+        try {
+            // 确保桶存在
+            ensureBucketExists(sourceBucketName);
+            ensureBucketExists(targetBucketName);
+
+            // 直接在 MinIO 服务器端复制对象
+            minioClient.copyObject(
+                    CopyObjectArgs.builder()
+                            .bucket(targetBucketName)
+                            .object(targetFilePath)
+                            .source(
+                                    CopySource.builder()
+                                            .bucket(sourceBucketName)
+                                            .object(sourceFilePath)
+                                            .build()
+                            )
+                            .build()
+            );
+        } catch (Exception e) {
+            throw new RuntimeException("复制失败", e);
+        }
+    }
+
+    /**
+     * 根据文件名获取文件
+     *
+     * @param bucketName 桶名
+     * @param fileName   文件名
+     * @return 文件流
+     */
+    public InputStream getObject(String bucketName, String fileName) {
+        try {
+            // 先检查文件是否存在
+            StatObjectResponse stat = minioClient.statObject(
+                    StatObjectArgs.builder()
+                            .bucket(bucketName)
+                            .object(fileName)
+                            .build()
+            );
+            logger.info("文件详情：{}", stat);
+
+            return minioClient.getObject(
+                    GetObjectArgs.builder()
+                            .bucket(bucketName)
+                            .object(fileName).build()
+            );
+        } catch (Exception e) {
+            throw new RuntimeException("下载失败", e);
+        }
+    }
+
+    /**
+     * 删除论文文件（设置每月月初1号凌晨过期）
+     *
+     * @param bucketName 桶名
+     * @param fileName   文件名
+     */
+    public void deleteFile(String bucketName, String fileName) throws Exception {
+        // 计算下个月1号凌晨的时间
+        ZonedDateTime nextFirstDay = ZonedDateTime.now(ZoneOffset.UTC)
+                .plusMonths(1)                             // 下个月
+                .withDayOfMonth(1)                         // 月初第一天
+                .truncatedTo(ChronoUnit.DAYS);            // 截断到天（凌晨00:00）
+
+        String expirationDate = nextFirstDay.format(DateTimeFormatter.ISO_INSTANT);
+
+        // 创建规则过滤器，指定特定文件
+        RuleFilter filter = new RuleFilter(
+                null,           // prefix
+                fileName,       // 指定文件名
+                null           // tags
+        );
+
+        // 创建生命周期规则
+        LifecycleRule rule = new LifecycleRule(
+                Status.ENABLED,                                    // 启用规则
+                null,                                             // 不设置分片上传
+                new Expiration(
+                        ResponseDate.fromString(expirationDate),  // 下月1号凌晨过期
+                        null,                                     // 不使用天数
+                        null                                      // 不删除过期标记
+                ),
+                filter,                                          // 使用文件过滤器
+                "expire-" + fileName,                            // 规则ID（使用文件名作为一部分）
+                null,                                            // 不设置版本过期
+                null,                                            // 不设置版本转换
+                null                                             // 不设置转换
+        );
+
+        // 应用配置
+        LifecycleConfiguration config = new LifecycleConfiguration(Collections.singletonList(rule));
+        minioClient.setBucketLifecycle(
+                SetBucketLifecycleArgs.builder()
+                        .bucket(bucketName)
+                        .config(config)
+                        .build()
+        );
+    }
+
 
     /**
      * 创建并检查桶

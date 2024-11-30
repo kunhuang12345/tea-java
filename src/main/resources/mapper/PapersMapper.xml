@@ -10,6 +10,10 @@
         <result column="conference" property="conference" />
         <result column="file" property="file" />
         <result column="reporter_id" property="reporterId" />
+        <result column="paper_path" property="paperPath" />
+        <result column="attachment_path" property="attachmentPath" />
+        <result column="deleted" property="deleted" />
+        <result column="delete_time" property="deleteTime" />
     </resultMap>
 
 </mapper>

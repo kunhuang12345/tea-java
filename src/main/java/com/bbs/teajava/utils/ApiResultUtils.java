@@ -30,8 +30,8 @@ public class ApiResultUtils {
         return new ApiResultUtils(200, data, "success");
     }
 
-    public static ApiResultUtils success(Object data, int rows) {
-        ApiResultUtils apiResultUtils = new ApiResultUtils(200, data, "success");
+    public static ApiResultUtils success(int rows) {
+        ApiResultUtils apiResultUtils = new ApiResultUtils(200, "success");
         apiResultUtils.setRows(rows);
         return apiResultUtils;
     }
