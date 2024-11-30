@@ -20,6 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.InputStream;
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * <p>
@@ -86,14 +87,25 @@ public class ReporterApplyServiceImpl extends ServiceImpl<ReporterApplyMapper, R
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public ApiResultUtils approveRegister(Integer id) {
+    public ApiResultUtils approveRegister(Integer id, Integer status) {
         ReporterApply reporterApply = reporterApplyMapper.selectById(id);
         if (reporterApply == null) {
             return ApiResultUtils.error(404, "记录不存在");
         }
-        reporterApply.setStatus(ReporterApplyStatusEnum.AUDIT_PASS.getValue());
-        reporterApplyMapper.updateById(reporterApply);
-        usersService.reporterRegister(reporterApply.getUserId());
+        try {
+            ReporterApplyStatusEnum statusEnum = ReporterApplyStatusEnum.getEnum(status);
+            reporterApply.setStatus(statusEnum.getValue());
+            reporterApplyMapper.updateById(reporterApply);
+            usersService.reporterRegister(reporterApply.getUserId());
+        } catch (Exception e) {
+            log.error("审批状态不正确", e);
+            return ApiResultUtils.error(400, "审批状态不正确");
+        }
         return ApiResultUtils.success();
+    }
+
+    @Override
+    public List<ReporterApply> getAllRegisterList() {
+        return reporterApplyMapper.selectList(null);
     }
 }

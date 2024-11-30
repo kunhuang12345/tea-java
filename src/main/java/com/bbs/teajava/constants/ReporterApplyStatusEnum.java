@@ -18,6 +18,15 @@ public enum ReporterApplyStatusEnum {
         this.value = value;
     }
 
+    public static ReporterApplyStatusEnum getEnum(Integer status) throws Exception {
+        for (ReporterApplyStatusEnum statusEnum : ReporterApplyStatusEnum.values()) {
+            if (statusEnum.getValue() == status) {
+                return statusEnum;
+            }
+        }
+        throw new Exception("Invalid status: " + status);
+    }
+
     public int getValue() {
         return value;
     }

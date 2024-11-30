@@ -5,6 +5,8 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.bbs.teajava.utils.ApiResultUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
+
 /**
  * <p>
  *  服务类
@@ -35,8 +37,11 @@ public interface IReporterApplyService extends IService<ReporterApply> {
     /**
      * 审核会议报告人注册申请
      *
-     * @param id 申请人id
+     * @param id     申请人id
+     * @param status
      * @return 审核结果
      */
-    ApiResultUtils approveRegister(Integer id);
+    ApiResultUtils approveRegister(Integer id, Integer status);
+
+    List<ReporterApply> getAllRegisterList();
 }
