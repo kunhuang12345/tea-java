@@ -34,12 +34,18 @@ public class LoginCheckAspect {
             throw new UnauthorizedException("请先登录");
         }
         if (authentication.requireAdmin() && !this.isAdmin(userInSession)) {
-                throw new AccessDeniedException("权限不足");
-            }
+            throw new AccessDeniedException("权限不足");
+        }
+        if (authentication.requireReporter() && !this.isReporter(userInSession)) {
+            throw new AccessDeniedException("请先注册会议报告者");
+        }
         return joinPoint.proceed();
     }
 
     private boolean isAdmin(Users user) {
         return user.getRole() == RoleEnum.ADMIN.getValue();
+    }
+    private boolean isReporter(Users user) {
+        return user.getRole() == RoleEnum.REPORTER.getValue();
     }
 }

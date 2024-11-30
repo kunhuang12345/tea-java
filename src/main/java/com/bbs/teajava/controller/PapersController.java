@@ -26,13 +26,13 @@ public class PapersController {
 
     @RequestMapping(value = "/GetAllPapers", method = {RequestMethod.GET, RequestMethod.POST})
     @ApiResponse(description = "获取所有论文")
-    public Object getAllPapers() {
+    public ApiResultUtils getAllPapers() {
         return ApiResultUtils.success(papersService.getAllPapers());
     }
 
     @RequestMapping(value = "SavePapers", method = {RequestMethod.POST})
     @ApiResponse(description = "新增/修改论文, 修改论文需要传入论文id，是否存在附件: 0: 不存在, 1: 存在")
-    @Authentication
+    @Authentication(requireReporter = true)
     public ApiResultUtils savePapers(@RequestParam(value = "paperId", required = false) Integer paperId,
                                      @RequestParam(value = "title") String title,
                                      @RequestParam(value = "conference") String conference,

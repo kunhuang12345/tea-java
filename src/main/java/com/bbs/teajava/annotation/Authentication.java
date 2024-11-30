@@ -10,4 +10,5 @@ import java.lang.annotation.*;
 @Documented
 public @interface Authentication {
     boolean requireAdmin() default false;
+    boolean requireReporter() default false;
 }
