@@ -24,13 +24,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/friends")
 @RequiredArgsConstructor
 public class FriendsController {
-    private final IFriendsService friendsService;
 
-    @RequestMapping(value = "addFriend", method = {RequestMethod.POST})
-    @ApiResponse(description = "添加好友")
-    @Authentication
-    public ApiResultUtils addFriend(@RequestParam(value = "friendId") String friendId) {
-        return friendsService.addFriend(friendId);
-    }
 
 }

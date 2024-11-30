@@ -17,7 +17,6 @@ public interface IFriendsService extends IService<Friends> {
     /**
      * 添加好友
      * @param friendId 好友id
-     * @return 添加结果
      */
-    ApiResultUtils addFriend(String friendId);
+    void addFriend(Integer friendId) throws Exception;
 }

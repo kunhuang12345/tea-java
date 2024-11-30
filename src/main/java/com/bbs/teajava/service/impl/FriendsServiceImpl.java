@@ -6,11 +6,13 @@ import com.bbs.teajava.mapper.FriendsMapper;
 import com.bbs.teajava.mapper.UsersMapper;
 import com.bbs.teajava.service.IFriendsService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.bbs.teajava.utils.ApiResultUtils;
 import com.bbs.teajava.utils.SessionUtils;
-import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * <p>
@@ -28,13 +30,22 @@ public class FriendsServiceImpl extends ServiceImpl<FriendsMapper, Friends> impl
     private final UsersMapper usersMapper;
 
     @Override
-    public ApiResultUtils addFriend(String friendId) {
+    @Transactional(rollbackFor = Exception.class)
+    public void addFriend(Integer friendId) throws Exception {
         Users friendInfo = usersMapper.selectById(friendId);
         if (friendInfo == null) {
-            return ApiResultUtils.error(500, "用户不存在");
+            throw new Exception("该用户不存在");
         }
+        Users user = SessionUtils.getUser();
+        List<Friends> friendList = new ArrayList<>();
         Friends friend = new Friends();
-        // TODO: 申请
-        return null;
+        friend.setUserId(user.getId());
+        friend.setFriendId(friendId);
+        friendList.add(friend);
+        friend = new Friends();
+        friend.setUserId(friendId);
+        friend.setFriendId(user.getId());
+        friendList.add(friend);
+        friendsMapper.batchInsert(friendList);
     }
 }

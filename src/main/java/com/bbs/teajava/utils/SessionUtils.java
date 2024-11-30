@@ -1,5 +1,6 @@
 package com.bbs.teajava.utils;
 
+import com.bbs.teajava.entity.Users;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -14,6 +15,13 @@ public class SessionUtils {
         return attrs.getRequest().getSession();
     }
 
-    private SessionUtils() {}
+    public static Users getUser() {
+        HttpSession session = getSession();
+        return (Users) session.getAttribute(session.getId());
+    }
+
+
+    private SessionUtils() {
+    }
 
 }

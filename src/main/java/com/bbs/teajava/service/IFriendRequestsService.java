@@ -39,4 +39,15 @@ public interface IFriendRequestsService extends IService<FriendRequests> {
      * @return 收到的好友申请列表
      */
     List<FriendRequestsResultDto> getReceivedApplyList();
+
+    /**
+     * 处理好友申请
+     *  1. 同意：添加好友
+     *  2. 拒绝好友申请
+     *
+     * @param applyId 申请ID
+     * @param status  处理状态
+     * @return 接口结果
+     */
+    ApiResultUtils handleFriendApply(Integer applyId, Integer status);
 }

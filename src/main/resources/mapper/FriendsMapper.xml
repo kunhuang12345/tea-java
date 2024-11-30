@@ -7,5 +7,12 @@
         <result column="user_id" property="userId" />
         <result column="friend_id" property="friendId" />
     </resultMap>
+    <insert id="batchInsert">
+        INSERT INTO friends (user_id, friend_id)
+        VALUES
+        <foreach collection="list" item="item" separator=",">
+            (#{item.userId}, #{item.friendId})
+        </foreach>
+    </insert>
 
 </mapper>
