@@ -6,6 +6,7 @@ package com.bbs.teajava.constants;
 public enum AttachmentTagEnum {
     // 存在附件
     EXIST(1),
+    // 不存在附件
     NOT_EXIST(0);
     private final int value;
 

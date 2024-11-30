@@ -3,6 +3,7 @@ package com.bbs.teajava.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.bbs.teajava.constants.AttachmentTagEnum;
 import com.bbs.teajava.constants.BucketNameEnum;
+import com.bbs.teajava.constants.PaperDownloadTypeEnum;
 import com.bbs.teajava.constants.RoleEnum;
 import com.bbs.teajava.entity.Papers;
 import com.bbs.teajava.entity.Users;
@@ -11,6 +12,7 @@ import com.bbs.teajava.mapper.PapersMapper;
 import com.bbs.teajava.service.IPapersService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.bbs.teajava.utils.*;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -25,7 +27,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 /**
  * <p>
@@ -145,5 +146,29 @@ public class PapersServiceImpl extends ServiceImpl<PapersMapper, Papers> impleme
     @Transactional(rollbackFor = Exception.class)
     public void cleanDeletedData() {
         papersMapper.clean();
+    }
+
+    @Override
+    public void download(Integer paperId, Integer type) throws Exception {
+        Papers papers = papersMapper.selectById(paperId);
+        if (papers == null) {
+            throw new Exception("论文不存在");
+        }
+        try {
+            PaperDownloadTypeEnum typeEnum = PaperDownloadTypeEnum.getEnum(type);
+            String bucketName;
+            String filePath;
+            if (typeEnum.getValue() == PaperDownloadTypeEnum.PAPER.getValue()) {
+                bucketName = BucketNameEnum.PAPER.getValue();
+                filePath = papers.getPaperPath();
+            } else {
+                bucketName = BucketNameEnum.ATTACHMENT.getValue();
+                filePath = papers.getAttachmentPath();
+            }
+            minio.downLoadFile(bucketName, filePath);
+        } catch (Exception e) {
+            logger.error("下载论文失败", e);
+            throw new Exception("下载失败");
+        }
     }
 }

@@ -2,12 +2,17 @@ package com.bbs.teajava.utils;
 
 import io.minio.*;
 import io.minio.messages.*;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import java.io.InputStream;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -21,7 +26,6 @@ import java.util.Collections;
 @RequiredArgsConstructor
 public class MinioUtil {
     private final MinioClient minioClient;
-    private final Logger logger = LoggerFactory.getLogger(getClass());
 
     /**
      * 上传文件前检查并创建桶
@@ -89,20 +93,31 @@ public class MinioUtil {
      */
     public InputStream getObject(String bucketName, String fileName) {
         try {
-            // 先检查文件是否存在
-            StatObjectResponse stat = minioClient.statObject(
-                    StatObjectArgs.builder()
-                            .bucket(bucketName)
-                            .object(fileName)
-                            .build()
-            );
-            logger.info("文件详情：{}", stat);
-
             return minioClient.getObject(
                     GetObjectArgs.builder()
                             .bucket(bucketName)
                             .object(fileName).build()
             );
+        } catch (Exception e) {
+            throw new RuntimeException("下载失败", e);
+        }
+    }
+
+    public void downLoadFile(String bucketName, String filePath) {
+        try {
+            HttpServletResponse response = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getResponse();
+            byte[] fileBytes = this.getObject(bucketName, filePath).readAllBytes();
+            // 设置文件名（需要URL编码，防止中文乱码）
+            String fileName = URLEncoder.encode(filePath, StandardCharsets.UTF_8);
+
+            // 设置响应头
+            response.setContentType(MediaType.APPLICATION_OCTET_STREAM_VALUE);
+            response.setHeader(HttpHeaders.CONTENT_DISPOSITION,
+                    "attachment; filename=\"" + fileName + "\"");
+
+            // 写入数据
+            response.getOutputStream().write(fileBytes);
+            response.getOutputStream().flush();
         } catch (Exception e) {
             throw new RuntimeException("下载失败", e);
         }

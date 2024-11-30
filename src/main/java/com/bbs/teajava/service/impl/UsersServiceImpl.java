@@ -1,6 +1,6 @@
 package com.bbs.teajava.service.impl;
 
-import com.baomidou.mybatisplus.core.conditions.Wrapper;
+
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.bbs.teajava.config.ParamConfig;
 import com.bbs.teajava.constants.RoleEnum;

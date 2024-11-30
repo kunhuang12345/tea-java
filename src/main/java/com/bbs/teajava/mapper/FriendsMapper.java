@@ -28,7 +28,8 @@ public interface FriendsMapper extends BaseMapper<Friends> {
     /**
      * 删除好友
      *
-     * @param friends 关系信息
+     * @param userId    用户ID
+     * @param friendId  好友ID
      * @return 影响行数
      */
     @Delete("delete from friends where user_id = #{userId} and friend_id = #{friendId}")

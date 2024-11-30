@@ -55,4 +55,11 @@ public class PapersController {
         return papersService.deletePaper(paperId);
     }
 
+    @RequestMapping(value = "Download", method = {RequestMethod.GET, RequestMethod.POST})
+    @ApiResponse( description = "下载论文/论文附件 type: 0:论文, 1:论文附件")
+    public void download(@RequestParam(value = "paperId") Integer paperId,
+                         @RequestParam(value = "type") Integer type) throws Exception {
+        papersService.download(paperId, type);
+    }
+
 }

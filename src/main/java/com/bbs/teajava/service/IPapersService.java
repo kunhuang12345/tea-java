@@ -57,4 +57,12 @@ public interface IPapersService extends IService<Papers> {
      * 清理已删除数据
      */
     void cleanDeletedData();
+
+    /**
+     * 下载论文
+     *
+     * @param paperId 论文id
+     * @param type 0:论文, 1:论文附件
+     */
+    void download(Integer paperId, Integer type) throws Exception;
 }

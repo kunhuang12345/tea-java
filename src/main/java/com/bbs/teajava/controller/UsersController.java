@@ -1,6 +1,7 @@
 package com.bbs.teajava.controller;
 
 
+
 import com.bbs.teajava.annotation.Authentication;
 import com.bbs.teajava.service.IUsersService;
 import com.bbs.teajava.utils.ApiResultUtils;
@@ -66,6 +67,7 @@ public class UsersController {
 
     @RequestMapping(value = "UserLogout", method = {RequestMethod.POST})
     @ApiResponse(description = "用户注销")
+    @Authentication
     public ApiResultUtils userLogout() {
         return usersService.userLogout();
     }
