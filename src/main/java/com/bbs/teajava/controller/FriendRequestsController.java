@@ -33,5 +33,13 @@ public class FriendRequestsController {
                                       @RequestParam(value = "message") String message) {
         return friendRequestsService.applyFriend(friendId, message);
     }
+    
+    @RequestMapping(value = "GetApplyFriendList", method = {RequestMethod.GET, RequestMethod.POST})
+    @ApiResponse(description = "获取好友申请列表")
+    @Authentication
+    public ApiResultUtils getApplyFriendList(
+    ) {
+        return ApiResultUtils.success(friendRequestsService.getApplyFriendList());
+    }
 
 }

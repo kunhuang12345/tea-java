@@ -2,7 +2,10 @@ package com.bbs.teajava.service;
 
 import com.bbs.teajava.entity.FriendRequests;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.bbs.teajava.entity.dto.FriendRequestsResultDto;
 import com.bbs.teajava.utils.ApiResultUtils;
+
+import java.util.List;
 
 /**
  * <p>
@@ -22,4 +25,11 @@ public interface IFriendRequestsService extends IService<FriendRequests> {
      * @return 接口结果
      */
     ApiResultUtils applyFriend(Integer friendId, String message);
+
+    /**
+     * 获取好友申请列表
+     *
+     * @return 好友申请列表
+     */
+    List<FriendRequestsResultDto> getApplyFriendList();
 }

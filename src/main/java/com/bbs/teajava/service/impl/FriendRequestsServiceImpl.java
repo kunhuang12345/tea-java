@@ -1,8 +1,10 @@
 package com.bbs.teajava.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.bbs.teajava.constants.FriendRequestStatusEnum;
 import com.bbs.teajava.entity.FriendRequests;
 import com.bbs.teajava.entity.Users;
+import com.bbs.teajava.entity.dto.FriendRequestsResultDto;
 import com.bbs.teajava.mapper.FriendRequestsMapper;
 import com.bbs.teajava.mapper.UsersMapper;
 import com.bbs.teajava.service.IFriendRequestsService;
@@ -11,10 +13,13 @@ import com.bbs.teajava.utils.ApiResultUtils;
 import com.bbs.teajava.utils.SessionUtils;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * <p>
@@ -47,5 +52,22 @@ public class FriendRequestsServiceImpl extends ServiceImpl<FriendRequestsMapper,
         friendRequests.setCreateTime(LocalDateTime.now());
         friendRequestsMapper.insert(friendRequests);
         return ApiResultUtils.success();
+    }
+
+    @Override
+    public List<FriendRequestsResultDto> getApplyFriendList() {
+        HttpSession session = SessionUtils.getSession();
+        Users user = (Users) session.getAttribute(session.getId());
+
+        QueryWrapper<FriendRequests> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("from_user_id", user.getId());
+        List<FriendRequests> friendRequestList = friendRequestsMapper.selectList(queryWrapper);
+        List<FriendRequestsResultDto> dtoList = new ArrayList<>();
+        for (FriendRequests e : friendRequestList) {
+            FriendRequestsResultDto dto = new FriendRequestsResultDto();
+            BeanUtils.copyProperties(e, dto);
+            dtoList.add(dto);
+        }
+        return dtoList;
     }
 }
