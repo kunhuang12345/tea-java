@@ -1,6 +1,7 @@
 package com.bbs.teajava.controller;
 
 
+import com.bbs.teajava.annotation.Authentication;
 import com.bbs.teajava.service.IUsersService;
 import com.bbs.teajava.utils.ApiResultUtils;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -53,6 +54,13 @@ public class UsersController {
                                        @RequestParam(value = "password") String password,
                                        @RequestParam(value = "emailCode") String emailCode) {
         return usersService.userRegister(username, email, password, emailCode);
+    }
+
+    @RequestMapping(value = "ReporterRegister", method = {RequestMethod.POST})
+    @ApiResponse(description = "会议报告人注册")
+    @Authentication
+    public ApiResultUtils reporterRegister() {
+        return usersService.reporterRegister();
     }
 
     @RequestMapping(value = "UserLogin", method = {RequestMethod.GET, RequestMethod.POST})

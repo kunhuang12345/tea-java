@@ -110,14 +110,8 @@ public class PapersServiceImpl extends ServiceImpl<PapersMapper, Papers> impleme
     @Override
     public ApiResultUtils uploadTempFile(MultipartFile attachment) {
         try {
-            HttpSession session = SessionUtils.getSession();
-            Random random = RandomUtil.getRandom();
-            int randomNum = random.nextInt(10000000);
-            String randomStr = String.format("%08d", randomNum);
-            session.setAttribute("randomStr", randomStr);
-            session.setAttribute("fileName", attachment.getOriginalFilename());
-            minio.uploadFile(BucketNameEnum.TEMP.getValue(), FileNameUtils.attachment(attachment.getOriginalFilename(), randomStr), attachment.getInputStream());
-            return ApiResultUtils.success("上传成功");
+            TempFileUploadUtil.upload(minio, attachment);
+            return ApiResultUtils.success();
         } catch (IOException e) {
             return ApiResultUtils.error(500, "上传失败");
         }

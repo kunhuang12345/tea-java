@@ -72,6 +72,8 @@ minio:
   accessKey: admin
   secretKey: 12345678
   buckets:
+    - name: reporter
+      policy: read-write
     - name: paper
       policy: read-write
     - name: attachment

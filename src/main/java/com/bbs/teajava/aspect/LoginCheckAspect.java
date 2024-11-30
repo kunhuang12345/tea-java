@@ -33,19 +33,20 @@ public class LoginCheckAspect {
         if (userInSession == null) {
             throw new UnauthorizedException("请先登录");
         }
-        if (authentication.requireAdmin() && !this.isAdmin(userInSession)) {
+        if (authentication.requireAdmin() && this.isAdmin(userInSession)) {
             throw new AccessDeniedException("权限不足");
         }
-        if (authentication.requireReporter() && !this.isReporter(userInSession)) {
+        if (authentication.requireReporter() && this.isReporter(userInSession) && this.isAdmin(userInSession)) {
             throw new AccessDeniedException("请先注册会议报告者");
         }
         return joinPoint.proceed();
     }
 
     private boolean isAdmin(Users user) {
-        return user.getRole() == RoleEnum.ADMIN.getValue();
+        return user.getRole() != RoleEnum.ADMIN.getValue();
     }
+
     private boolean isReporter(Users user) {
-        return user.getRole() == RoleEnum.REPORTER.getValue();
+        return user.getRole() != RoleEnum.REPORTER.getValue();
     }
 }

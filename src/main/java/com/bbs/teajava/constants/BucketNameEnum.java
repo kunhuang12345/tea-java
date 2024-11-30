@@ -7,7 +7,8 @@ package com.bbs.teajava.constants;
 public enum BucketNameEnum {
     TEMP("temp"),
     PAPER("paper"),
-    ATTACHMENT("attachment");
+    ATTACHMENT("attachment"),
+    REPORTER("reporter");
 
     private final String bucketName;
 

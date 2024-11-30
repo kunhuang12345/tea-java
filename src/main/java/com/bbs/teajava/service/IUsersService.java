@@ -72,4 +72,10 @@ public interface IUsersService extends IService<Users> {
      * @return 修改结果
      */
     ApiResultUtils userAlterPassword(String email, String oldPassword, String newPassword);
+
+    /**
+     * 会议报告人注册
+     * @return 注册结果
+     */
+    ApiResultUtils reporterRegister();
 }

@@ -22,4 +22,8 @@ public class FilePathUtils {
 
     private FilePathUtils() {
     }
+
+    public static String reporterApply(String email, String fileName) {
+        return "reporter/" + email + "/" + fileName;
+    }
 }

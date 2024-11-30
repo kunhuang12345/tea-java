@@ -227,6 +227,14 @@ public class UsersServiceImpl extends ServiceImpl<UsersMapper, Users> implements
         return ApiResultUtils.success("密码修改成功");
     }
 
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public ApiResultUtils reporterRegister() {
+        // TODO 完成用户报告
+//        SessionUtils.getUser()
+        return null;
+    }
+
     /**
      * 密码合格校验
      *
