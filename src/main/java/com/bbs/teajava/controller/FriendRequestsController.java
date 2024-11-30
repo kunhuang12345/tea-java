@@ -28,7 +28,7 @@ public class FriendRequestsController {
     private final IFriendRequestsService friendRequestsService;
 
     @RequestMapping(value = "ApplyFriend", method = {RequestMethod.POST})
-    @ApiResponse(description = "申请好友")
+    @ApiResponse(description = "添加好友")
     @Authentication
     public ApiResultUtils applyFriend(@RequestParam(value = "friendId") Integer friendId,
                                       @RequestParam(value = "message", required = false) String message) {
@@ -38,8 +38,7 @@ public class FriendRequestsController {
     @RequestMapping(value = "GetApplyFriendList", method = {RequestMethod.GET, RequestMethod.POST})
     @ApiResponse(description = "获取好友申请列表")
     @Authentication
-    public ApiResultUtils getApplyFriendList(
-    ) {
+    public ApiResultUtils getApplyFriendList() {
         return ApiResultUtils.success(friendRequestsService.getApplyFriendList());
     }
 

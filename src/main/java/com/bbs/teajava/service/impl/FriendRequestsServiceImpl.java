@@ -77,7 +77,7 @@ public class FriendRequestsServiceImpl extends ServiceImpl<FriendRequestsMapper,
     public List<FriendRequestsResultDto> getReceivedApplyList() {
         Users user = SessionUtils.getUser();
         QueryWrapper<FriendRequests> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("from_user_id", user.getId());
+        queryWrapper.eq("to_user_id", user.getId());
         return this.getFriendApplyList(queryWrapper);
     }
 
