@@ -5,6 +5,7 @@
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.bbs.teajava.entity.Comments">
         <id column="id" property="id" />
+        <result column="pid" property="pid" />
         <result column="user_id" property="userId" />
         <result column="paper_id" property="paperId" />
         <result column="content" property="content" />

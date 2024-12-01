@@ -88,6 +88,7 @@ public class ReporterApplyServiceImpl extends ServiceImpl<ReporterApplyMapper, R
     @Override
     @Transactional(rollbackFor = Exception.class)
     public ApiResultUtils approveRegister(Integer id, Integer status) {
+        // TODO: 修改对方session状态
         ReporterApply reporterApply = reporterApplyMapper.selectById(id);
         if (reporterApply == null) {
             return ApiResultUtils.error(404, "记录不存在");

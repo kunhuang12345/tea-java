@@ -1,13 +1,20 @@
 package com.bbs.teajava.controller;
 
 
+import com.bbs.teajava.annotation.Authentication;
+import com.bbs.teajava.service.ICommentsService;
+import com.bbs.teajava.utils.ApiResultUtils;
+import io.swagger.annotations.ApiOperation;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
  * <p>
- *  前端控制器
+ * 前端控制器
  * </p>
  *
  * @author hk
@@ -15,6 +22,27 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequestMapping("/comments")
+@RequiredArgsConstructor
 public class CommentsController {
+
+    private final ICommentsService commentsService;
+
+    @RequestMapping(value = "AddPaperComment", method = {RequestMethod.POST})
+    @ApiOperation("添加论文评论")
+    @Authentication
+    public ApiResultUtils addPaperComment(@RequestParam(value = "paperId") Integer paperId,
+                                          @RequestParam(value = "content") String content) {
+        return commentsService.addPaperComment(paperId, content);
+    }
+
+    @RequestMapping(value = "AddChildComment", method = {RequestMethod.POST})
+    @ApiOperation("添加子评论")
+    @Authentication
+    public ApiResultUtils addChildComment(@RequestParam(value = "pid") Integer pid,
+                                          @RequestParam(value = "content") String content) {
+        return commentsService.addChildComment(pid, content);
+    }
+
+
 
 }
