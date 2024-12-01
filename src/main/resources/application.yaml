@@ -66,6 +66,12 @@ server:
     uri-encoding: UTF-8
 
 
+# 日志级别设置
+logging:
+  level:
+    web: debug
+    root: info
+
 # minio 配置
 minio:
   endpoint: http://localhost:9000

@@ -2,6 +2,7 @@ package com.bbs.teajava.service;
 
 import com.bbs.teajava.entity.Friends;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.bbs.teajava.entity.Users;
 import com.bbs.teajava.entity.dto.UserResultDto;
 import com.bbs.teajava.utils.ApiResultUtils;
 
@@ -38,4 +39,27 @@ public interface IFriendsService extends IService<Friends> {
      * @return 成功或失败
      */
     ApiResultUtils deleteFriend(Integer friendId);
+
+    /**
+     * 添加关注
+     *
+     * @param userId 用户id
+     * @return 添加成功或失败
+     */
+    ApiResultUtils addFollow(Integer userId);
+
+    /**
+     * 取消关注
+     *
+     * @param userId 用户id
+     * @return 取消成功或失败
+     */
+    ApiResultUtils cancelFollow(Integer userId);
+
+    /**
+     * 获取关注列表
+     *
+     * @return 关注列表
+     */
+    List<Users> getAllFollowList();
 }

@@ -5,7 +5,7 @@ package com.bbs.teajava.controller;
 import com.bbs.teajava.annotation.Authentication;
 import com.bbs.teajava.service.IUsersService;
 import com.bbs.teajava.utils.ApiResultUtils;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -28,13 +28,13 @@ public class UsersController {
     private final IUsersService usersService;
 
     @RequestMapping(value = "/GetAllUsers", method = {RequestMethod.GET, RequestMethod.POST})
-    @ApiResponse(description = "获取所有用户信息")
+    @ApiOperation("获取所有用户信息")
     public ApiResultUtils getAllUsers() {
         return ApiResultUtils.success(usersService.getAllUsers());
     }
 
     @RequestMapping(value = "SendEmailCode", method = {RequestMethod.POST})
-    @ApiResponse(description = "发送邮件验证码")
+    @ApiOperation("发送邮件验证码")
     public ApiResultUtils sendEmailCode(@RequestParam(value = "targetEmail") String targetEmail,
                                         @RequestParam(value = "imageCode") String imageCode,
                                         @RequestParam(value = "subject") String subject,
@@ -43,13 +43,13 @@ public class UsersController {
     }
 
     @RequestMapping(value = "GetImageCode", method = {RequestMethod.GET, RequestMethod.POST})
-    @ApiResponse(description = "获取图片验证码")
+    @ApiOperation("获取图片验证码")
     public ApiResultUtils getImageCode(@RequestParam(value = "email") String email) {
         return usersService.getImageCode(email);
     }
 
     @RequestMapping(value = "UserRegister", method = {RequestMethod.POST})
-    @ApiResponse(description = "注册用户")
+    @ApiOperation("注册用户")
     public ApiResultUtils userRegister(@RequestParam(value = "username") String username,
                                        @RequestParam(value = "email") String email,
                                        @RequestParam(value = "password") String password,
@@ -59,21 +59,21 @@ public class UsersController {
 
 
     @RequestMapping(value = "UserLogin", method = {RequestMethod.GET, RequestMethod.POST})
-    @ApiResponse(description = "用户登录")
+    @ApiOperation("用户登录")
     public ApiResultUtils userLogin(@RequestParam(value = "email") String email,
                                     @RequestParam(value = "password") String password) {
         return usersService.userLogin(email, password);
     }
 
     @RequestMapping(value = "UserLogout", method = {RequestMethod.POST})
-    @ApiResponse(description = "用户注销")
+    @ApiOperation("用户注销")
     @Authentication
     public ApiResultUtils userLogout() {
         return usersService.userLogout();
     }
 
     @RequestMapping(value = "UserAlterPassword", method = {RequestMethod.POST})
-    @ApiResponse(description = "修改密码(每7天限制修改三次)")
+    @ApiOperation("修改密码(每7天限制修改三次)")
     public ApiResultUtils userAlterPassword(@RequestParam(value = "email") String email,
                                             @RequestParam(value = "oldPassword") String oldPassword,
                                             @RequestParam(value = "newPassword") String newPassword) {

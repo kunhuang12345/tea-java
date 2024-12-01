@@ -8,6 +8,7 @@ class TeaJavaApplicationTests {
 
     @Test
     void contextLoads() {
+        return;
     }
 
 }
