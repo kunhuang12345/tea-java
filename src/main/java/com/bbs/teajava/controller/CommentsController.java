@@ -50,5 +50,12 @@ public class CommentsController {
         return ApiResultUtils.success(commentsService.getAllCommentList(paperId));
     }
 
+    @RequestMapping(value = "DeleteComment", method = {RequestMethod.POST})
+    @ApiOperation("删除评论")
+    @Authentication
+    public ApiResultUtils deleteComment(@RequestParam(value = "commentId") Integer commentId) {
+        return commentsService.deleteComment(commentId);
+    }
+
 
 }

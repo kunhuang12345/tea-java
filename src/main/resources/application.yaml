@@ -88,6 +88,8 @@ minio:
       policy: read-write
 
 mybatis-plus:
+  configuration:
+    map-underscore-to-camel-case: true  # 开启驼峰命名规则
   global-config:
     db-config:
       logic-delete-field: deleted  # 全局逻辑删除字段值

@@ -43,4 +43,12 @@ public interface ICommentsService extends IService<Comments> {
      * @return 评论列表
      */
     List<CommentResultDto> getAllCommentList(Integer paperId);
+
+    /**
+     * 删除评论
+     *
+     * @param commentId 评论id
+     * @return 删除结果
+     */
+    ApiResultUtils deleteComment(Integer commentId);
 }
