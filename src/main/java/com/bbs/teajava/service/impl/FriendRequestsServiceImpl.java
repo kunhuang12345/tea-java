@@ -97,8 +97,11 @@ public class FriendRequestsServiceImpl extends ServiceImpl<FriendRequestsMapper,
         friendRequestResult.setStatus(status);
         friendRequestsMapper.updateById(friendRequestResult);
         try {
-            friendService.addFriend(applyId);
+            if (status == 1) {
+                friendService.addFriend(applyId);
+            }
         } catch (Exception e) {
+            log.error(e.getMessage(), e);
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             return ApiResultUtils.error(500, "添加好友失败");
         }

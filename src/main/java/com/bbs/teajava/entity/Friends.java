@@ -26,11 +26,8 @@ public class Friends implements Serializable {
 
     private Integer friendId;
 
-    @Override
-    public String toString() {
-        return "Friends{" +
-            "userId=" + userId +
-            ", friendId=" + friendId +
-        "}";
-    }
+    private Integer isFriend;
+
+    private Integer isFollow;
+
 }

@@ -1,6 +1,7 @@
 package com.bbs.teajava.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.bbs.teajava.constants.RelationshipEnum;
 import com.bbs.teajava.entity.Friends;
 import com.bbs.teajava.entity.Users;
 import com.bbs.teajava.entity.dto.UserResultDto;
@@ -22,7 +23,7 @@ import java.util.List;
 
 /**
  * <p>
- *  好友实现类
+ * 好友实现类
  * </p>
  *
  * @author hk
@@ -43,16 +44,40 @@ public class FriendsServiceImpl extends ServiceImpl<FriendsMapper, Friends> impl
             throw new Exception("该用户不存在");
         }
         Users user = SessionUtils.getUser();
-        List<Friends> friendList = new ArrayList<>();
-        Friends friend = new Friends();
-        friend.setUserId(user.getId());
-        friend.setFriendId(friendId);
-        friendList.add(friend);
-        friend = new Friends();
-        friend.setUserId(friendId);
-        friend.setFriendId(user.getId());
-        friendList.add(friend);
-        friendsMapper.batchInsert(friendList);
+        // 添加自己与对方记录
+        QueryWrapper<Friends> queryWrapper = new QueryWrapper<Friends>().eq("user_id", user.getId()).eq("friend_id", friendId);
+        Friends userShip = friendsMapper.selectOne(queryWrapper);
+        // 记录存在标志
+        int tag = 1;
+        if (userShip == null) {
+            tag = 0;
+            userShip = new Friends();
+            userShip.setIsFollow(RelationshipEnum.NOT_FOLLOW.getValue());
+        }
+        userShip.setUserId(user.getId());
+        userShip.setFriendId(friendId);
+        userShip.setIsFriend(RelationshipEnum.FRIENDS.getValue());
+        if (tag == 0) {
+            friendsMapper.insert(userShip);
+        } else {
+            friendsMapper.update(userShip, queryWrapper);
+        }
+        // 对方关系记录添加
+        queryWrapper.clear();
+        queryWrapper = new QueryWrapper<Friends>().eq("user_id", friendId).eq("friend_id", user.getId());
+        userShip = friendsMapper.selectOne(queryWrapper);
+        if (userShip == null) {
+            userShip = new Friends();
+            userShip.setIsFollow(RelationshipEnum.NOT_FOLLOW.getValue());
+        }
+        userShip.setUserId(friendId);
+        userShip.setFriendId(user.getId());
+        userShip.setIsFriend(RelationshipEnum.FRIENDS.getValue());
+        if (tag == 0) {
+            friendsMapper.insert(userShip);
+        } else {
+            friendsMapper.update(userShip, queryWrapper);
+        }
     }
 
     @Override
@@ -60,6 +85,7 @@ public class FriendsServiceImpl extends ServiceImpl<FriendsMapper, Friends> impl
         Users user = SessionUtils.getUser();
         QueryWrapper<Friends> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("user_id", user.getId());
+        queryWrapper.eq("is_friend", RelationshipEnum.FRIENDS.getValue());
         List<Friends> friendList = friendsMapper.selectList(queryWrapper);
         List<Integer> idList = friendList.stream().map(Friends::getFriendId).toList();
         if (CollectionUtils.isEmpty(idList)) {
@@ -79,8 +105,17 @@ public class FriendsServiceImpl extends ServiceImpl<FriendsMapper, Friends> impl
     @Transactional(rollbackFor = Exception.class)
     public ApiResultUtils deleteFriend(Integer friendId) {
         Users user = SessionUtils.getUser();
-        int count = friendsMapper.delete(user.getId(), friendId);
-        int count1 = friendsMapper.delete(friendId, user.getId());
-        return ApiResultUtils.success(count + count1);
+        // 删除好友关系
+        QueryWrapper<Friends> queryWrapper = new QueryWrapper<Friends>().eq("user_id", user.getId()).eq("friend_id", friendId);
+        Friends userShip = friendsMapper.selectOne(queryWrapper);
+        userShip.setIsFriend(RelationshipEnum.NOT_FRIENDS.getValue());
+        int update0 = friendsMapper.update(userShip, queryWrapper);
+        // 删除对方的好友关系
+        queryWrapper.clear();
+        queryWrapper.eq("user_id", friendId).eq("friend_id", user.getId());
+        userShip = friendsMapper.selectOne(queryWrapper);
+        userShip.setIsFriend(RelationshipEnum.NOT_FRIENDS.getValue());
+        int update1 = friendsMapper.update(userShip, queryWrapper);
+        return ApiResultUtils.success(update0 + update1);
     }
 }

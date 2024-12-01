@@ -4,15 +4,10 @@
 
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.bbs.teajava.entity.Friends">
-        <result column="user_id" property="userId" />
-        <result column="friend_id" property="friendId" />
+        <result column="user_id" property="userId"/>
+        <result column="friend_id" property="friendId"/>
+        <result column="is_friend" property="isFriend"/>
+        <result column="is_follow" property="isFollow"/>
     </resultMap>
-    <insert id="batchInsert">
-        INSERT INTO friends (user_id, friend_id)
-        VALUES
-        <foreach collection="list" item="item" separator=",">
-            (#{item.userId}, #{item.friendId})
-        </foreach>
-    </insert>
 
 </mapper>
