@@ -1,8 +1,10 @@
 package com.bbs.teajava.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.bbs.teajava.constants.RoleEnum;
 import com.bbs.teajava.entity.Comments;
 import com.bbs.teajava.entity.Papers;
+import com.bbs.teajava.entity.Users;
 import com.bbs.teajava.entity.dto.CommentResultDto;
 import com.bbs.teajava.mapper.CommentsMapper;
 import com.bbs.teajava.mapper.PapersMapper;
@@ -70,13 +72,13 @@ public class CommentsServiceImpl extends ServiceImpl<CommentsMapper, Comments> i
 
     @Override
     public List<CommentResultDto> getAllCommentList(Integer paperId) {
-        List<Comments> commentList = commentsMapper.selectList(new QueryWrapper<Comments>().eq("paper_id", paperId));
+        List<Comments> commentList = commentsMapper.selectListByPaperId(paperId);
         // 转换resultDto
         List<CommentResultDto> dtoList = CommentResultDto.convertFromComments(commentList);
         // 将根级评论转换为Map
         Map<Integer, CommentResultDto> dtoMap = dtoList.stream().filter(dto -> dto.getPid() == 0).collect(Collectors.toMap(CommentResultDto::getId, Function.identity()));
         for (CommentResultDto dto : dtoList) {
-            if (dto.getPid() == 0) {
+            if (dto.getPid() == 0 || dto.getDeleted() == 1) {
                 continue;
             }
             Integer commentRootId = this.getCommentRootId(dto, dtoList);
@@ -86,7 +88,18 @@ public class CommentsServiceImpl extends ServiceImpl<CommentsMapper, Comments> i
             }
             rootDto.getChildren().add(dto);
         }
-        return new ArrayList<>(dtoMap.values());
+        return new ArrayList<>(dtoMap.values()).stream().filter(dto -> dto.getDeleted() == 0).toList();
+    }
+
+    @Override
+    public ApiResultUtils deleteComment(Integer commentId) {
+        Comments comment = commentsMapper.selectOne(new QueryWrapper<Comments>().eq("id", commentId));
+        Users user = SessionUtils.getUser();
+        if (comment == null || (!user.getId().equals(comment.getUserId()) && user.getRole() != RoleEnum.ADMIN.getValue())) {
+            return ApiResultUtils.error(500, "评论不存在或权限不足！");
+        }
+        int delete = commentsMapper.deleteById(commentId);
+        return ApiResultUtils.success(delete);
     }
 
     private Integer getCommentRootId(CommentResultDto dto, List<CommentResultDto> dtoList) {

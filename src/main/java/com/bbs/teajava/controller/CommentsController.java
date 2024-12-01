@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 /**
  * <p>
- * 前端控制器
+ * 评论接口
  * </p>
  *
  * @author hk
@@ -48,6 +48,13 @@ public class CommentsController {
     @ApiOperation("获取评论列表")
     public ApiResultUtils getAllCommentList(@RequestParam(value = "paperId") Integer paperId) {
         return ApiResultUtils.success(commentsService.getAllCommentList(paperId));
+    }
+
+    @RequestMapping(value = "DeleteComment", method = {RequestMethod.POST})
+    @ApiOperation("删除评论")
+    @Authentication
+    public ApiResultUtils deleteComment(@RequestParam(value = "commentId") Integer commentId) {
+        return commentsService.deleteComment(commentId);
     }
 
 

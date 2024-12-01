@@ -1,5 +1,6 @@
 package com.bbs.teajava.entity;
 
+import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
@@ -33,5 +34,8 @@ public class Comments implements Serializable {
     private Integer paperId;
 
     private String content;
+
+    @TableLogic
+    private Integer deleted;
 
 }

@@ -9,6 +9,7 @@
         <result column="user_id" property="userId" />
         <result column="paper_id" property="paperId" />
         <result column="content" property="content" />
+        <result column="deleted" property="deleted" />
     </resultMap>
 
 </mapper>

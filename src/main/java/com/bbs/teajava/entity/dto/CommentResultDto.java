@@ -16,6 +16,7 @@ public class CommentResultDto {
     private Integer pid;
     private Integer userId;
     private String content;
+    private Integer deleted;
     private List<CommentResultDto> children;
 
     public static List<CommentResultDto> convertFromComments(List<Comments> commentList) {
