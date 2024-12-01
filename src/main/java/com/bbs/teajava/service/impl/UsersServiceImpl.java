@@ -141,7 +141,7 @@ public class UsersServiceImpl extends ServiceImpl<UsersMapper, Users> implements
     @Transactional(rollbackFor = Exception.class)
     public ApiResultUtils userRegister(String username, String email, String password, String emailCode) {
         List<String> codeInRedis = redis.range(email + "EmailCode", 0L, 1L);
-        if (CollectionUtils.isEmpty(codeInRedis) ||!emailCode.equals(codeInRedis.get(0))) {
+        if (CollectionUtils.isEmpty(codeInRedis) || !emailCode.equals(codeInRedis.get(0))) {
             return ApiResultUtils.error(400, "验证码错误");
         }
         Map<String, Object> columeMap = new HashMap<>();
@@ -172,17 +172,15 @@ public class UsersServiceImpl extends ServiceImpl<UsersMapper, Users> implements
         if (userInSession != null) {
             return ApiResultUtils.error(400, "您已登录，请勿重复登录");
         }
-        HashMap<String, Object> selectMap = new HashMap<>();
-        selectMap.put("email", email);
-        List<Users> users = usersMapper.selectByMap(selectMap);
-        if (CollectionUtils.isEmpty(users)) {
+        Users user = usersMapper.selectOne(new QueryWrapper<Users>().eq("email", email));
+        if (user == null) {
             return ApiResultUtils.error(400, "用户未注册！");
         }
-        Users user = users.get(0);
         if (!passwordEncoder.matches(password, user.getPassword())) {
             return ApiResultUtils.error(400, "密码错误");
         }
         session.setAttribute(sessionId, user);
+        // TODO 设置 session 存入redis的id，方便管理员获取并更改信息
         return ApiResultUtils.success("登录成功");
     }
 
@@ -208,7 +206,7 @@ public class UsersServiceImpl extends ServiceImpl<UsersMapper, Users> implements
             return ApiResultUtils.error(400, "用户不存在");
         }
         String alterCount = redis.get(email + "AlterPassword");
-        if (StringUtils.isNotEmpty(alterCount) && Integer.parseInt(alterCount) >2) {
+        if (StringUtils.isNotEmpty(alterCount) && Integer.parseInt(alterCount) > 2) {
             return ApiResultUtils.error(400, "本周内密码修改次数超过三次！");
         }
         if (!passwordEncoder.matches(oldPassword, user.getPassword())) {
@@ -232,6 +230,7 @@ public class UsersServiceImpl extends ServiceImpl<UsersMapper, Users> implements
     @Transactional(rollbackFor = Exception.class)
     public void reporterRegister(Integer id) {
         usersMapper.updateRole(id, RoleEnum.REPORTER.getValue());
+        // TODO 获取用户session
     }
 
     /**
