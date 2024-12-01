@@ -38,11 +38,17 @@ public class CommentsController {
     @RequestMapping(value = "AddChildComment", method = {RequestMethod.POST})
     @ApiOperation("添加子评论")
     @Authentication
-    public ApiResultUtils addChildComment(@RequestParam(value = "pid") Integer pid,
+    public ApiResultUtils addChildComment(@RequestParam(value = "paperId") Integer paperId,
+                                          @RequestParam(value = "pid") Integer pid,
                                           @RequestParam(value = "content") String content) {
-        return commentsService.addChildComment(pid, content);
+        return commentsService.addChildComment(paperId, pid, content);
     }
 
+    @RequestMapping(value = "GetAllCommentList", method = {RequestMethod.GET, RequestMethod.POST})
+    @ApiOperation("获取评论列表")
+    public ApiResultUtils getAllCommentList(@RequestParam(value = "paperId") Integer paperId) {
+        return ApiResultUtils.success(commentsService.getAllCommentList(paperId));
+    }
 
 
 }

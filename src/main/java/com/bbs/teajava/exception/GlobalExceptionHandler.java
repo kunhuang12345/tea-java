@@ -67,6 +67,6 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     public ApiResultUtils handleException(Exception e) {
         log.error(e.getMessage(), e);
-        return ApiResultUtils.error(500, e.getMessage());
+        return ApiResultUtils.error(500, "未知异常，请联系管理员");
     }
 }
