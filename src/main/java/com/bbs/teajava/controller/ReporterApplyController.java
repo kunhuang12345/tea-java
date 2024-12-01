@@ -4,7 +4,7 @@ package com.bbs.teajava.controller;
 import com.bbs.teajava.annotation.Authentication;
 import com.bbs.teajava.service.IReporterApplyService;
 import com.bbs.teajava.utils.ApiResultUtils;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -29,7 +29,7 @@ public class ReporterApplyController {
 
 
     @RequestMapping(value = "ReporterRegister", method = {RequestMethod.POST})
-    @ApiResponse(description = "会议报告人注册申请 fileTag: 0 没有附件 1 有附件")
+    @ApiOperation("会议报告人注册申请 fileTag: 0 没有附件 1 有附件")
     @Authentication
     public ApiResultUtils reporterRegister(@RequestParam(value = "applyNote") String applyNote,
                                            @RequestParam(value = "fileTag") Integer fileTag) {
@@ -37,7 +37,7 @@ public class ReporterApplyController {
     }
 
     @RequestMapping(value = "ApproveRegister", method = {RequestMethod.POST})
-    @ApiResponse(description = "审核会议报告人注册申请 status: 1 通过 2 不通过")
+    @ApiOperation("审核会议报告人注册申请 status: 1 通过 2 不通过")
     @Authentication(requireAdmin = true)
     public ApiResultUtils approveRegister(@RequestParam(value = "id") Integer id,
                                           @RequestParam(value = "status") Integer status) {
@@ -45,14 +45,14 @@ public class ReporterApplyController {
     }
 
     @RequestMapping(value = "GetAllRegisterList", method = {RequestMethod.GET, RequestMethod.POST})
-    @ApiResponse(description = "获取所有会议报告人注册申请")
+    @ApiOperation("获取所有会议报告人注册申请")
     @Authentication(requireAdmin = true)
     public ApiResultUtils getAllRegisterList() {
         return ApiResultUtils.success(reporterApplyService.getAllRegisterList());
     }
 
     @RequestMapping(value = "UploadTempFile", method = {RequestMethod.POST})
-    @ApiResponse(description = "上传临时文件")
+    @ApiOperation("上传临时文件")
     @Authentication
     public ApiResultUtils uploadTempFile(@RequestParam(value = "attachment") MultipartFile attachment) {
         return reporterApplyService.uploadTempFile(attachment);

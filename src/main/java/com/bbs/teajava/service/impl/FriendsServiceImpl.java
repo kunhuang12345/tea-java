@@ -67,6 +67,7 @@ public class FriendsServiceImpl extends ServiceImpl<FriendsMapper, Friends> impl
         queryWrapper = new QueryWrapper<Friends>().eq("user_id", friendId).eq("friend_id", user.getId());
         userShip = friendsMapper.selectOne(queryWrapper);
         if (userShip == null) {
+            tag = 0;
             userShip = new Friends();
             userShip.setIsFollow(RelationshipEnum.NOT_FOLLOW.getValue());
         }
@@ -117,5 +118,55 @@ public class FriendsServiceImpl extends ServiceImpl<FriendsMapper, Friends> impl
         userShip.setIsFriend(RelationshipEnum.NOT_FRIENDS.getValue());
         int update1 = friendsMapper.update(userShip, queryWrapper);
         return ApiResultUtils.success(update0 + update1);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public ApiResultUtils addFollow(Integer userId) {
+        Users user = SessionUtils.getUser();
+        // 添加关注
+        QueryWrapper<Friends> queryWrapper = new QueryWrapper<Friends>().eq("user_id", user.getId()).eq("friend_id", userId);
+        Friends userShip = friendsMapper.selectOne(queryWrapper);
+        if (userShip == null) {
+            userShip = new Friends();
+            userShip.setUserId(user.getId());
+            userShip.setFriendId(userId);
+            userShip.setIsFriend(RelationshipEnum.NOT_FRIENDS.getValue());
+            userShip.setIsFollow(RelationshipEnum.FOLLOW.getValue());
+            int insert = friendsMapper.insert(userShip);
+            return ApiResultUtils.success(insert);
+        }
+        userShip.setIsFollow(RelationshipEnum.FOLLOW.getValue());
+        int update = friendsMapper.update(userShip, queryWrapper);
+        return ApiResultUtils.success(update);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public ApiResultUtils cancelFollow(Integer userId) {
+        Users user = SessionUtils.getUser();
+        // 取消关注
+        QueryWrapper<Friends> queryWrapper = new QueryWrapper<Friends>().eq("user_id", user.getId()).eq("friend_id", userId);
+        Friends userShip = friendsMapper.selectOne(queryWrapper);
+        if (userShip == null) {
+            return ApiResultUtils.success("该用户未关注");
+        }
+        userShip.setIsFollow(RelationshipEnum.NOT_FOLLOW.getValue());
+        int update = friendsMapper.update(userShip, queryWrapper);
+        return ApiResultUtils.success(update);
+    }
+
+    @Override
+    public List<Users> getAllFollowList() {
+        Users user = SessionUtils.getUser();
+        QueryWrapper<Friends> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("user_id", user.getId());
+        queryWrapper.eq("is_follow", RelationshipEnum.FOLLOW.getValue());
+        List<Friends> followList = friendsMapper.selectList(queryWrapper);
+        List<Integer> idList = followList.stream().map(Friends::getFriendId).toList();
+        if (CollectionUtils.isEmpty(idList)) {
+            return Collections.emptyList();
+        }
+        return usersMapper.selectBatchIds(idList);
     }
 }

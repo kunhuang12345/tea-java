@@ -4,7 +4,7 @@ package com.bbs.teajava.controller;
 import com.bbs.teajava.annotation.Authentication;
 import com.bbs.teajava.service.IFriendsService;
 import com.bbs.teajava.utils.ApiResultUtils;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 /**
  * <p>
- * 前端控制器
+ * 关系接口
  * </p>
  *
  * @author hk
@@ -28,15 +28,36 @@ public class FriendsController {
 
     private final IFriendsService friendsService;
 
+    @RequestMapping(value = "AddFollow", method = {RequestMethod.POST})
+    @ApiOperation("添加关注")
+    @Authentication
+    public ApiResultUtils addFollow(@RequestParam(value = "userId") Integer userId) {
+        return friendsService.addFollow(userId);
+    }
+
+    @RequestMapping(value = "CancelFollow", method = {RequestMethod.POST})
+    @ApiOperation("取消关注")
+    @Authentication
+    public ApiResultUtils cancelFollow(@RequestParam(value = "userId") Integer userId) {
+        return friendsService.cancelFollow(userId);
+    }
+
+    @RequestMapping(value = "GetAllFollowList", method = {RequestMethod.GET, RequestMethod.POST})
+    @ApiOperation("获取全部关注列表")
+    @Authentication
+    public Object getAllFollowList() {
+        return ApiResultUtils.success(friendsService.getAllFollowList());
+    }
+
     @RequestMapping(value = "GetAllFriendList", method = {RequestMethod.GET, RequestMethod.POST})
-    @ApiResponse(description = "获取全部好友列表")
+    @ApiOperation("获取全部好友列表")
     @Authentication
     public ApiResultUtils getAllFriendList() {
         return ApiResultUtils.success(friendsService.getAllFriendList());
     }
 
     @RequestMapping(value = "DeleteFriend", method = {RequestMethod.POST})
-    @ApiResponse(description = "删除好友")
+    @ApiOperation("删除好友")
     @Authentication
     public ApiResultUtils deleteFriend(@RequestParam(value = "friendId") Integer friendId) {
         return friendsService.deleteFriend(friendId);
