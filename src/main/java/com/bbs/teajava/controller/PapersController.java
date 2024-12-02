@@ -31,6 +31,13 @@ public class PapersController {
         return ApiResultUtils.success(papersService.getAllPapers());
     }
 
+    @RequestMapping(value = "GetPaperListByPage", method = {RequestMethod.GET, RequestMethod.POST})
+    @ApiOperation("分页获取论文列表")
+    public ApiResultUtils getPaperListByPage(@RequestParam(value = "page", required = false, defaultValue = "1") Integer page,
+                                             @RequestParam(value = "pageSize", required = false, defaultValue = "10") Integer pageSize) {
+        return ApiResultUtils.success(papersService.getPaperListByPage(page, pageSize));
+    }
+
     @RequestMapping(value = "SavePapers", method = {RequestMethod.POST})
     @ApiOperation("新增/修改论文, 修改论文需要传入论文id，是否存在附件: 0: 不存在, 1: 存在")
     @Authentication(requireReporter = true)
@@ -64,7 +71,7 @@ public class PapersController {
     }
 
     @RequestMapping(value = "Download", method = {RequestMethod.GET, RequestMethod.POST})
-    @ApiResponse( description = "下载论文/论文附件 type: 0:论文, 1:论文附件")
+    @ApiResponse(description = "下载论文/论文附件 type: 0:论文, 1:论文附件")
     public void download(@RequestParam(value = "paperId") Integer paperId,
                          @RequestParam(value = "type") Integer type) throws Exception {
         papersService.download(paperId, type);

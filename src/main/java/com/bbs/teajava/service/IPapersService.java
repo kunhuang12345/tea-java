@@ -1,9 +1,11 @@
 package com.bbs.teajava.service;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.bbs.teajava.entity.Papers;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.bbs.teajava.entity.dto.PaperResultDto;
 import com.bbs.teajava.utils.ApiResultUtils;
+import com.fasterxml.jackson.core.io.BigIntegerParser;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -73,4 +75,13 @@ public interface IPapersService extends IService<Papers> {
      * @return 论文信息
      */
     PaperResultDto getPaperById(Integer paperId);
+
+    /**
+     * 分页查询论文列表
+     *
+     * @param page 页数
+     * @param pageSize 每页数量
+     * @return 分页查询结果
+     */
+    IPage<PaperResultDto> getPaperListByPage(Integer page, Integer pageSize);
 }

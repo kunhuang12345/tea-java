@@ -1,6 +1,9 @@
 package com.bbs.teajava.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.bbs.teajava.constants.AttachmentTagEnum;
 import com.bbs.teajava.constants.BucketNameEnum;
 import com.bbs.teajava.constants.PaperDownloadTypeEnum;
@@ -182,5 +185,20 @@ public class PapersServiceImpl extends ServiceImpl<PapersMapper, Papers> impleme
             return dto;
         }
         return null;
+    }
+
+    @Override
+    public IPage<PaperResultDto> getPaperListByPage(Integer page, Integer pageSize) {
+        Page<Papers> papersPage = papersMapper.selectPage(new Page<>(page,pageSize), new QueryWrapper<>());
+        Page<PaperResultDto> dtoPage = new Page<>();
+        BeanUtils.copyProperties(papersPage, dtoPage);
+        List<PaperResultDto> dtoList = new ArrayList<>();
+        for (Papers paper : papersPage.getRecords()) {
+            PaperResultDto dto = new PaperResultDto();
+            BeanUtils.copyProperties(paper, dto);
+            dtoList.add(dto);
+        }
+        dtoPage.setRecords(dtoList);
+        return dtoPage;
     }
 }
