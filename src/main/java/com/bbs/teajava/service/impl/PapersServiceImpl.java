@@ -11,6 +11,7 @@ import com.bbs.teajava.entity.Papers;
 import com.bbs.teajava.entity.Users;
 import com.bbs.teajava.entity.dto.PaperResultDto;
 import com.bbs.teajava.mapper.PapersMapper;
+import com.bbs.teajava.service.IPaperStatusService;
 import com.bbs.teajava.service.IPapersService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.bbs.teajava.utils.*;
@@ -42,6 +43,7 @@ import java.util.List;
 public class PapersServiceImpl extends ServiceImpl<PapersMapper, Papers> implements IPapersService {
     private final PapersMapper papersMapper;
     private final MinioUtil minio;
+    private final IPaperStatusService paperStatusService;
 
     Logger logger = LoggerFactory.getLogger(PapersServiceImpl.class);
 
@@ -168,6 +170,10 @@ public class PapersServiceImpl extends ServiceImpl<PapersMapper, Papers> impleme
                 bucketName = BucketNameEnum.ATTACHMENT.getValue();
                 filePath = papers.getAttachmentPath();
             }
+            if (type == PaperDownloadTypeEnum.ATTACHMENT.getValue()) {
+                // 更新附件下载量
+                paperStatusService.addAttachmentDownloadCount(paperId);
+            }
             minio.downLoadFile(bucketName, filePath);
         } catch (Exception e) {
             logger.error("下载论文失败", e);
@@ -197,7 +203,7 @@ public class PapersServiceImpl extends ServiceImpl<PapersMapper, Papers> impleme
     }
 
     private IPage<PaperResultDto> getPaperListByPage(Integer page, Integer pageSize, QueryWrapper<Papers> queryWrapper) {
-        Page<Papers> papersPage = papersMapper.selectPage(new Page<>(page,pageSize), queryWrapper);
+        Page<Papers> papersPage = papersMapper.selectPage(new Page<>(page, pageSize), queryWrapper);
         Page<PaperResultDto> dtoPage = new Page<>();
         BeanUtils.copyProperties(papersPage, dtoPage);
         List<PaperResultDto> dtoList = new ArrayList<>();

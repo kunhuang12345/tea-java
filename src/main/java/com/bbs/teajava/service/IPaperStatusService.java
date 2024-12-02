@@ -58,7 +58,6 @@ public interface IPaperStatusService extends IService<PaperStatus> {
      * 论文附件下载量+1
      *
      * @param paperId 论文ID
-     * @return +1 结果
      */
-    ApiResultUtils addAttachmentDownloadCount(Integer paperId);
+    void addAttachmentDownloadCount(Integer paperId) throws Exception;
 }

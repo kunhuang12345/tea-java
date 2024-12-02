@@ -56,11 +56,4 @@ public class PaperStatusController {
     public ApiResultUtils addDownloadCount(@RequestParam(value = "paperId") Integer paperId) {
         return paperStatusService.addDownloadCount(paperId);
     }
-
-    @RequestMapping(value = "AddAttachmentDownloadCount", method = {RequestMethod.POST})
-    @ApiOperation("论文附件下载量+1")
-    public ApiResultUtils addAttachmentDownloadCount(@RequestParam(value = "paperId") Integer paperId) {
-        return paperStatusService.addAttachmentDownloadCount(paperId);
-    }
-
 }

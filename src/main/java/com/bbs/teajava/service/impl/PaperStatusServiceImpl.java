@@ -103,12 +103,12 @@ public class PaperStatusServiceImpl extends ServiceImpl<PaperStatusMapper, Paper
     }
 
     @Override
-    public ApiResultUtils addAttachmentDownloadCount(Integer paperId) {
+    public void addAttachmentDownloadCount(Integer paperId) throws Exception {
         String count = redisUtil.get("attachmentDownloadCount" + paperId);
         if (count == null) {
             Papers papers = papersMapper.selectById(paperId);
             if (papers == null) {
-                return new ApiResultUtils(400, "论文不存在", "error");
+                throw new Exception("论文不存在");
             }
             count = "0";
         }
@@ -127,6 +127,5 @@ public class PaperStatusServiceImpl extends ServiceImpl<PaperStatusMapper, Paper
                 paperStatusMapper.updateById(paperStatus);
             }
         }
-        return new ApiResultUtils(200, "success");
     }
 }
