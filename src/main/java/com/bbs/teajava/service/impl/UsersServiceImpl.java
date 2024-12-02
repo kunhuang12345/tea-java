@@ -8,10 +8,7 @@ import com.bbs.teajava.entity.Users;
 import com.bbs.teajava.mapper.UsersMapper;
 import com.bbs.teajava.service.IUsersService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.bbs.teajava.utils.ApiResultUtils;
-import com.bbs.teajava.utils.RandomUtil;
-import com.bbs.teajava.utils.RedisUtil;
-import com.bbs.teajava.utils.SessionUtils;
+import com.bbs.teajava.utils.*;
 import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
 import jakarta.servlet.http.HttpSession;
@@ -98,6 +95,9 @@ public class UsersServiceImpl extends ServiceImpl<UsersMapper, Users> implements
 
     @Override
     public ApiResultUtils getImageCode(String email) {
+        if (!RegexVerifyUtils.isEmail(email)) {
+            return ApiResultUtils.error(400, "邮箱格式错误");
+        }
         // 图片尺寸
         int width = 100;
         int height = 40;
@@ -142,6 +142,12 @@ public class UsersServiceImpl extends ServiceImpl<UsersMapper, Users> implements
     @Override
     @Transactional(rollbackFor = Exception.class)
     public ApiResultUtils userRegister(String username, String email, String password, String emailCode) {
+        if (!RegexVerifyUtils.isUsername(username)) {
+            return ApiResultUtils.error(400, "用户名：字母开头，允许字母数字下划线，6-20位");
+        }
+        if (!RegexVerifyUtils.isEmail(email)) {
+            return ApiResultUtils.error(400, "邮箱格式错误");
+        }
         List<String> codeInRedis = redis.range(email + "EmailCode", 0L, 1L);
         if (CollectionUtils.isEmpty(codeInRedis) || !emailCode.equals(codeInRedis.get(0))) {
             return ApiResultUtils.error(400, "验证码错误");
@@ -155,7 +161,7 @@ public class UsersServiceImpl extends ServiceImpl<UsersMapper, Users> implements
         user.setUsername(username);
         user.setEmail(email);
         // 密码验证加密并填入数据库
-        List<String> validated = this.validatePassword(password);
+        List<String> validated = RegexVerifyUtils.validatePassword(password);
         if (CollectionUtils.isNotEmpty(validated)) {
             return ApiResultUtils.error(400, validated.toString());
         }
@@ -231,7 +237,7 @@ public class UsersServiceImpl extends ServiceImpl<UsersMapper, Users> implements
         if (!passwordEncoder.matches(oldPassword, user.getPassword())) {
             return ApiResultUtils.error(400, "旧密码错误");
         }
-        List<String> validated = this.validatePassword(newPassword);
+        List<String> validated = RegexVerifyUtils.validatePassword(newPassword);
         if (CollectionUtils.isNotEmpty(validated)) {
             return ApiResultUtils.error(400, validated.toString());
         }
@@ -261,27 +267,5 @@ public class UsersServiceImpl extends ServiceImpl<UsersMapper, Users> implements
 //        }
     }
 
-    /**
-     * 密码合格校验
-     *
-     * @param password 密码
-     * @return 错误信息列表
-     */
-    private List<String> validatePassword(String password) {
-        List<String> validationErrors = new ArrayList<>();
 
-        if (password.length() < 8) {
-            validationErrors.add("密码长度不能小于8位");
-        }
-        if (password.length() > 20) {
-            validationErrors.add("密码长度不能小于20位");
-        }
-        if (!password.matches(".*[a-z].*")) {
-            validationErrors.add("必须包含小写字母");
-        }
-        if (!password.matches(".*\\d.*")) {
-            validationErrors.add("必须包含数字");
-        }
-        return validationErrors;
-    }
 }
