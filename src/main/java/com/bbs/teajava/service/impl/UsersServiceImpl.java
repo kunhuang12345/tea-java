@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.bbs.teajava.config.ParamConfig;
 import com.bbs.teajava.constants.RoleEnum;
 import com.bbs.teajava.entity.Users;
+import com.bbs.teajava.entity.dto.UserResultDto;
 import com.bbs.teajava.mapper.UsersMapper;
 import com.bbs.teajava.service.IUsersService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -17,6 +18,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -265,6 +267,14 @@ public class UsersServiceImpl extends ServiceImpl<UsersMapper, Users> implements
 //            user.setRole(RoleEnum.REPORTER.getValue());
 //            session.setAttribute("user", user);
 //        }
+    }
+
+    @Override
+    public UserResultDto getInfo() {
+        Users user = SessionUtils.getUser();
+        UserResultDto userResultDto = new UserResultDto();
+        BeanUtils.copyProperties(user, userResultDto);
+        return userResultDto;
     }
 
 

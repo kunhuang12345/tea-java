@@ -2,6 +2,7 @@ package com.bbs.teajava.service;
 
 import com.bbs.teajava.entity.Users;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.bbs.teajava.entity.dto.UserResultDto;
 import com.bbs.teajava.utils.ApiResultUtils;
 
 import java.util.List;
@@ -79,4 +80,11 @@ public interface IUsersService extends IService<Users> {
      * @param id 注册用户id
      */
     void reporterRegister(Integer id);
+
+    /**
+     * 获取用户信息
+     *
+     * @return 用户信息
+     */
+    UserResultDto getInfo();
 }

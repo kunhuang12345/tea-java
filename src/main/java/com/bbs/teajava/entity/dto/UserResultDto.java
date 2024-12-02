@@ -10,4 +10,5 @@ public class UserResultDto {
     private Integer id;
     private String username;
     private String email;
+    private Integer role;
 }

@@ -1,7 +1,6 @@
 package com.bbs.teajava.controller;
 
 
-
 import com.bbs.teajava.annotation.Authentication;
 import com.bbs.teajava.service.IUsersService;
 import com.bbs.teajava.utils.ApiResultUtils;
@@ -31,6 +30,13 @@ public class UsersController {
     @ApiOperation("获取所有用户信息")
     public ApiResultUtils getAllUsers() {
         return ApiResultUtils.success(usersService.getAllUsers());
+    }
+
+    @RequestMapping(value = "GetInfo", method = {RequestMethod.GET, RequestMethod.POST})
+    @ApiOperation("获取用户信息")
+    @Authentication
+    public ApiResultUtils getInfo() {
+        return ApiResultUtils.success(usersService.getInfo());
     }
 
     @RequestMapping(value = "SendEmailCode", method = {RequestMethod.POST})
