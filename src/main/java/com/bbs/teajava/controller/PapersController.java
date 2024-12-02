@@ -38,6 +38,14 @@ public class PapersController {
         return ApiResultUtils.success(papersService.getPaperListByPage(page, pageSize));
     }
 
+    @RequestMapping(value = "GetUserPaperListByPage", method = {RequestMethod.GET, RequestMethod.POST})
+    @ApiOperation("分页获取用户论文列表")
+    public ApiResultUtils getUserPaperListByPage(@RequestParam(value = "page", required = false, defaultValue = "1") Integer page,
+                                                  @RequestParam(value = "pageSize", required = false, defaultValue = "10") Integer pageSize,
+                                                 @RequestParam(value = "userId") Integer userId) {
+        return ApiResultUtils.success(papersService.getUserPaperListByPage(page, pageSize, userId));
+    }
+
     @RequestMapping(value = "SavePapers", method = {RequestMethod.POST})
     @ApiOperation("新增/修改论文, 修改论文需要传入论文id，是否存在附件: 0: 不存在, 1: 存在")
     @Authentication(requireReporter = true)

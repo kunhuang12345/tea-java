@@ -1,6 +1,5 @@
 package com.bbs.teajava.service.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -189,7 +188,16 @@ public class PapersServiceImpl extends ServiceImpl<PapersMapper, Papers> impleme
 
     @Override
     public IPage<PaperResultDto> getPaperListByPage(Integer page, Integer pageSize) {
-        Page<Papers> papersPage = papersMapper.selectPage(new Page<>(page,pageSize), new QueryWrapper<>());
+        return this.getPaperListByPage(page, pageSize, new QueryWrapper<>());
+    }
+
+    @Override
+    public IPage<PaperResultDto> getUserPaperListByPage(Integer page, Integer pageSize, Integer userId) {
+        return this.getPaperListByPage(page, pageSize, new QueryWrapper<Papers>().eq("reporter_id", userId));
+    }
+
+    private IPage<PaperResultDto> getPaperListByPage(Integer page, Integer pageSize, QueryWrapper<Papers> queryWrapper) {
+        Page<Papers> papersPage = papersMapper.selectPage(new Page<>(page,pageSize), queryWrapper);
         Page<PaperResultDto> dtoPage = new Page<>();
         BeanUtils.copyProperties(papersPage, dtoPage);
         List<PaperResultDto> dtoList = new ArrayList<>();
