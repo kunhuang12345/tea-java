@@ -58,7 +58,7 @@ public class UsersController {
     }
 
 
-    @RequestMapping(value = "UserLogin", method = {RequestMethod.GET, RequestMethod.POST})
+    @RequestMapping(value = "UserLogin", method = {RequestMethod.POST})
     @ApiOperation("用户登录")
     public ApiResultUtils userLogin(@RequestParam(value = "email") String email,
                                     @RequestParam(value = "password") String password) {
