@@ -28,8 +28,7 @@ public class LoginCheckAspect {
     @Around("@annotation(authentication)")
     public Object checkLogin(ProceedingJoinPoint joinPoint, Authentication authentication) throws Throwable {
         HttpSession session = SessionUtils.getSession();
-        String sessionId = session.getId();
-        Users userInSession = (Users) session.getAttribute(sessionId);
+        Users userInSession = (Users) session.getAttribute("user");
         if (userInSession == null) {
             throw new UnauthorizedException("请先登录");
         }

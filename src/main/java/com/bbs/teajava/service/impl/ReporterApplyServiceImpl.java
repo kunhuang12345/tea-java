@@ -16,8 +16,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.interceptor.TransactionAspectSupport;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -57,9 +59,15 @@ public class ReporterApplyServiceImpl extends ServiceImpl<ReporterApplyMapper, R
             HttpSession session = SessionUtils.getSession();
             String randomStr = (String) session.getAttribute("randomStr");
             String fileName = (String) session.getAttribute("fileName");
+            session.removeAttribute("randomStr");
             InputStream fileStream = minio.getObject(BucketNameEnum.TEMP.getValue(), FileNameUtils.attachment(fileName, randomStr));
             if (fileStream == null) {
                 return ApiResultUtils.error(500, "文件不存在");
+            }
+            try {
+                fileStream.close();
+            } catch (IOException e) {
+                log.error("关闭文件流失败", e);
             }
             String filePath = FilePathUtils.reporterApply(user.getEmail(), fileName);
             reporterApply.setFilePath(filePath);
@@ -100,6 +108,7 @@ public class ReporterApplyServiceImpl extends ServiceImpl<ReporterApplyMapper, R
             usersService.reporterRegister(reporterApply.getUserId());
         } catch (Exception e) {
             log.error("审批状态不正确", e);
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             return ApiResultUtils.error(400, "审批状态不正确");
         }
         return ApiResultUtils.success();

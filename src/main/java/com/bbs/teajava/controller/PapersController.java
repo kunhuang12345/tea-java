@@ -43,8 +43,8 @@ public class PapersController {
     }
 
     @RequestMapping(value = "UploadTempFile", method = {RequestMethod.POST})
-    @ApiOperation("上传临时文件")
-    @Authentication
+    @ApiOperation("上传论文附件临时文件")
+    @Authentication(requireReporter = true)
     public ApiResultUtils uploadTempFile(@RequestParam(value = "attachment") MultipartFile attachment) {
         return papersService.uploadTempFile(attachment);
     }

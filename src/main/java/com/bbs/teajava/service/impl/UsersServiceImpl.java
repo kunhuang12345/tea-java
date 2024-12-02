@@ -50,11 +50,13 @@ public class UsersServiceImpl extends ServiceImpl<UsersMapper, Users> implements
     private final JavaMailSender mailSender;
     private final ParamConfig paramConfig;
     private final RedisUtil redis;
+//    private final RedisIndexedSessionRepository sessionRepository;
     // 密码加密
     private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
     Logger logger = LoggerFactory.getLogger(UsersServiceImpl.class);
 
     @Override
+
     public List<Users> getAllUsers() {
         return usersMapper.getAllUsers();
     }
@@ -167,9 +169,8 @@ public class UsersServiceImpl extends ServiceImpl<UsersMapper, Users> implements
     @Override
     public ApiResultUtils userLogin(String email, String password) {
         HttpSession session = SessionUtils.getSession();
-        String sessionId = session.getId();
-        Users userInSession = (Users) session.getAttribute(sessionId);
-        if (userInSession != null) {
+        Users userInfo = (Users) session.getAttribute("user");
+        if (userInfo != null) {
             return ApiResultUtils.error(400, "您已登录，请勿重复登录");
         }
         Users user = usersMapper.selectOne(new QueryWrapper<Users>().eq("email", email));
@@ -179,18 +180,36 @@ public class UsersServiceImpl extends ServiceImpl<UsersMapper, Users> implements
         if (!passwordEncoder.matches(password, user.getPassword())) {
             return ApiResultUtils.error(400, "密码错误");
         }
-        session.setAttribute(sessionId, user);
+
+        session.setAttribute("user", user);
         // TODO 设置 session 存入redis的id，方便管理员获取并更改信息
+        // 2. 获取对应的 RedisSession
+/*        session.setAttribute(
+                FindByIndexNameSessionRepository.PRINCIPAL_NAME_INDEX_NAME,
+                user.getId().toString()  // 或者 "session:" + user.getId()
+        );
+        // 4. 等待数据同步（可选）
+        try {
+            Thread.sleep(100);  // 给Redis一点时间同步数据
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+        Map<String, RedisIndexedSessionRepository.RedisSession> sessionMap = sessionRepository.findByPrincipalName(user.getId().toString());
+        for (RedisIndexedSessionRepository.RedisSession sessiontest : sessionMap.values()) {
+            Users usertest = sessiontest.getAttribute("user");
+            usertest.setRole(RoleEnum.REPORTER.getValue());
+            sessiontest.setAttribute("user", usertest);
+        }*/
         return ApiResultUtils.success("登录成功");
     }
 
     @Override
     public ApiResultUtils userLogout() {
         HttpSession session = SessionUtils.getSession();
-        String sessionId = session.getId();
-        Users userInSession = (Users) session.getAttribute(sessionId);
-        if (userInSession != null) {
-            session.removeAttribute(sessionId);
+        Users userInfo = (Users) session.getAttribute("user");
+        if (userInfo != null) {
+            session.removeAttribute("user");
+            session.invalidate();
             return ApiResultUtils.success("退出成功");
         }
         return ApiResultUtils.error(400, "您尚未登录");
@@ -231,6 +250,15 @@ public class UsersServiceImpl extends ServiceImpl<UsersMapper, Users> implements
     public void reporterRegister(Integer id) {
         usersMapper.updateRole(id, RoleEnum.REPORTER.getValue());
         // TODO 获取用户session
+//        Map<String, RedisIndexedSessionRepository.RedisSession> sessionMap = sessionRepository.findByIndexNameAndIndexValue(
+//                FindByIndexNameSessionRepository.PRINCIPAL_NAME_INDEX_NAME,
+//                "session:" + id
+//        );
+//        for (RedisIndexedSessionRepository.RedisSession session : sessionMap.values()) {
+//            Users user = session.getAttribute("user");
+//            user.setRole(RoleEnum.REPORTER.getValue());
+//            session.setAttribute("user", user);
+//        }
     }
 
     /**

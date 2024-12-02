@@ -12,7 +12,6 @@ import com.bbs.teajava.mapper.PapersMapper;
 import com.bbs.teajava.service.IPapersService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.bbs.teajava.utils.*;
-import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -60,7 +59,7 @@ public class PapersServiceImpl extends ServiceImpl<PapersMapper, Papers> impleme
     @Transactional(rollbackFor = Exception.class)
     public ApiResultUtils savePapers(Integer paperId, String title, String conference, MultipartFile paperFile, Integer attachmentTag) {
         HttpSession session = SessionUtils.getSession();
-        Users user = (Users) session.getAttribute(session.getId());
+        Users user = (Users) session.getAttribute("user");
         Papers paper = new Papers();
         paper.setTitle(title);
         paper.setAuthor(user.getUsername());
@@ -77,22 +76,24 @@ public class PapersServiceImpl extends ServiceImpl<PapersMapper, Papers> impleme
         } else {
             papersMapper.insert(paper);
         }
-        if (AttachmentTagEnum.EXIST.getValue() == attachmentTag) {
-            // 原文件名
-            String fileName = session.getAttribute("fileName").toString();
-            // 临时文件名
-            String attachmentTemp = FileNameUtils.attachment(fileName, session.getAttribute("randomStr").toString());
-            session.removeAttribute("randomString");
-            InputStream fileStream = minio.getObject(BucketNameEnum.TEMP.getValue(), attachmentTemp);
-            if (fileStream == null) {
-                TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-                return ApiResultUtils.error(500, "请先上传文件");
-            }
-            String attachmentPath = FilePathUtils.attachmentPath(user.getEmail(), FileNameUtils.attachment(fileName, String.valueOf(paper.getId())));
-            minio.copyFile(BucketNameEnum.TEMP.getValue(), BucketNameEnum.ATTACHMENT.getValue(), attachmentTemp, attachmentPath);
-            paper.setAttachmentPath(attachmentPath);
-        }
         try {
+            if (AttachmentTagEnum.EXIST.getValue() == attachmentTag) {
+                // 原文件名
+                String fileName = session.getAttribute("fileName").toString();
+                // 临时文件名
+                String attachmentTemp = FileNameUtils.attachment(fileName, session.getAttribute("randomStr").toString());
+                session.removeAttribute("randomStr");
+                InputStream fileStream = minio.getObject(BucketNameEnum.TEMP.getValue(), attachmentTemp);
+                if (fileStream == null) {
+                    TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+                    return ApiResultUtils.error(500, "请先上传文件");
+                }
+                fileStream.close();
+                String attachmentPath = FilePathUtils.attachmentPath(user.getEmail(), FileNameUtils.attachment(fileName, String.valueOf(paper.getId())));
+                minio.copyFile(BucketNameEnum.TEMP.getValue(), BucketNameEnum.ATTACHMENT.getValue(), attachmentTemp, attachmentPath);
+                paper.setAttachmentPath(attachmentPath);
+            }
+
             minio.uploadFile(
                     BucketNameEnum.PAPER.getValue(), // 桶名
                     FilePathUtils.paperPath(user.getEmail(), FileNameUtils.paper(paperFile.getOriginalFilename(), String.valueOf(paper.getId()))), // 文件路径
@@ -100,7 +101,7 @@ public class PapersServiceImpl extends ServiceImpl<PapersMapper, Papers> impleme
             );
             paper.setPaperPath(FilePathUtils.paperPath(user.getEmail(), FileNameUtils.paper(paperFile.getOriginalFilename(), String.valueOf(paper.getId()))));
             papersMapper.updateById(paper);
-        } catch (IOException e) {
+        } catch (Exception e) {
             logger.error("上传论文失败", e);
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             return ApiResultUtils.error(500, "论文上传失败");
@@ -126,7 +127,7 @@ public class PapersServiceImpl extends ServiceImpl<PapersMapper, Papers> impleme
         if (paper == null) {
             return ApiResultUtils.error(404, "论文不存在");
         }
-        Users user = (Users) session.getAttribute(session.getId());
+        Users user = (Users) session.getAttribute("user");
         if (user.getRole() != RoleEnum.ADMIN.getValue() && !user.getId().equals(paper.getReporterId())) {
             return ApiResultUtils.error(403, "无权限删除");
         }

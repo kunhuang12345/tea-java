@@ -17,7 +17,7 @@ public class SessionUtils {
 
     public static Users getUser() {
         HttpSession session = getSession();
-        return (Users) session.getAttribute(session.getId());
+        return (Users) session.getAttribute("user");
     }
 
 
