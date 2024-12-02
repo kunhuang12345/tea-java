@@ -172,4 +172,15 @@ public class PapersServiceImpl extends ServiceImpl<PapersMapper, Papers> impleme
             throw new Exception("下载失败");
         }
     }
+
+    @Override
+    public PaperResultDto getPaperById(Integer paperId) {
+        Papers paper = papersMapper.selectById(paperId);
+        if (paper != null) {
+            PaperResultDto dto = new PaperResultDto();
+            BeanUtils.copyProperties(paper, dto);
+            return dto;
+        }
+        return null;
+    }
 }

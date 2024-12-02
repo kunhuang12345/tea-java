@@ -65,4 +65,12 @@ public interface IPapersService extends IService<Papers> {
      * @param type 0:论文, 1:论文附件
      */
     void download(Integer paperId, Integer type) throws Exception;
+
+    /**
+     * 根据id获取论文信息
+     *
+     * @param paperId 论文id
+     * @return 论文信息
+     */
+    PaperResultDto getPaperById(Integer paperId);
 }

@@ -42,6 +42,13 @@ public class PapersController {
         return papersService.savePapers(paperId, title, conference, paperFile, attachmentTag);
     }
 
+    @RequestMapping(value = "GetPaperById", method = {RequestMethod.GET, RequestMethod.POST})
+    @ApiOperation("根据论文id获取论文详情")
+    public ApiResultUtils getPaperById(@RequestParam(value = "paperId") Integer paperId) {
+        return ApiResultUtils.success(papersService.getPaperById(paperId));
+    }
+
+
     @RequestMapping(value = "UploadTempFile", method = {RequestMethod.POST})
     @ApiOperation("上传论文附件临时文件")
     @Authentication(requireReporter = true)
