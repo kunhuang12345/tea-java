@@ -2,6 +2,7 @@ package com.bbs.teajava.controller;
 
 
 import com.bbs.teajava.annotation.Authentication;
+import com.bbs.teajava.annotation.MuteCheck;
 import com.bbs.teajava.service.ICommentsService;
 import com.bbs.teajava.utils.ApiResultUtils;
 import io.swagger.annotations.ApiOperation;
@@ -30,6 +31,7 @@ public class CommentsController {
     @RequestMapping(value = "AddPaperComment", method = {RequestMethod.POST})
     @ApiOperation("添加论文评论")
     @Authentication
+    @MuteCheck
     public ApiResultUtils addPaperComment(@RequestParam(value = "paperId") Integer paperId,
                                           @RequestParam(value = "content") String content) {
         return commentsService.addPaperComment(paperId, content);
@@ -38,6 +40,7 @@ public class CommentsController {
     @RequestMapping(value = "AddChildComment", method = {RequestMethod.POST})
     @ApiOperation("添加子评论")
     @Authentication
+    @MuteCheck
     public ApiResultUtils addChildComment(@RequestParam(value = "paperId") Integer paperId,
                                           @RequestParam(value = "pid") Integer pid,
                                           @RequestParam(value = "content") String content) {

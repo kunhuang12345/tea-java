@@ -5,13 +5,13 @@ import com.bbs.teajava.constants.RoleEnum;
 import com.bbs.teajava.entity.Users;
 import com.bbs.teajava.exception.AccessDeniedException;
 import com.bbs.teajava.exception.UnauthorizedException;
-import com.bbs.teajava.utils.RedisUtil;
 import com.bbs.teajava.utils.SessionUtils;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 
@@ -21,9 +21,8 @@ import org.springframework.stereotype.Component;
 @Aspect
 @Component
 @RequiredArgsConstructor
+@Order(1)
 public class LoginCheckAspect {
-
-    private final RedisUtil redisUtil;
 
     @Around("@annotation(authentication)")
     public Object checkLogin(ProceedingJoinPoint joinPoint, Authentication authentication) throws Throwable {

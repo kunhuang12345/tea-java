@@ -1,7 +1,6 @@
 package com.bbs.teajava.controller;
 
 
-import com.bbs.teajava.annotation.Authentication;
 import com.bbs.teajava.service.IPaperStatusService;
 import com.bbs.teajava.utils.ApiResultUtils;
 import io.swagger.annotations.ApiOperation;

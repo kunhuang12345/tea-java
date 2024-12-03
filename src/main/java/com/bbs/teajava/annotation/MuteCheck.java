@@ -4,12 +4,10 @@ import java.lang.annotation.*;
 
 /**
  * @author kunhuang
+ * 禁言检测注解
  */
 @Target({ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-public @interface Authentication {
-    boolean requireAdmin() default false;
-
-    boolean requireReporter() default false;
+public @interface MuteCheck {
 }

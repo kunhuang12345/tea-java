@@ -30,6 +30,9 @@ import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -275,6 +278,17 @@ public class UsersServiceImpl extends ServiceImpl<UsersMapper, Users> implements
         UserResultDto userResultDto = new UserResultDto();
         BeanUtils.copyProperties(user, userResultDto);
         return userResultDto;
+    }
+
+    @Override
+    public ApiResultUtils mute(Integer userId, String datetime) {
+        LocalDateTime time = LocalDateTime.parse(datetime, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+        long minutes = Duration.between(LocalDateTime.now(), time).toMinutes();
+        if (minutes < 0) {
+            return ApiResultUtils.error(400, "时间选择错误");
+        }
+        redis.set("mute" + userId, "1", minutes, TimeUnit.MINUTES);
+        return ApiResultUtils.success("success");
     }
 
 
