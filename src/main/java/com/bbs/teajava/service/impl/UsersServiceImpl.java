@@ -52,7 +52,7 @@ public class UsersServiceImpl extends ServiceImpl<UsersMapper, Users> implements
     private final JavaMailSender mailSender;
     private final ParamConfig paramConfig;
     private final RedisUtil redis;
-//    private final RedisIndexedSessionRepository sessionRepository;
+    //    private final RedisIndexedSessionRepository sessionRepository;
     // 密码加密
     private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
     Logger logger = LoggerFactory.getLogger(UsersServiceImpl.class);
