@@ -50,9 +50,9 @@ public class PapersServiceImpl extends ServiceImpl<PapersMapper, Papers> impleme
     @Override
     public List<PaperResultDto> getAllPapers() {
         List<Papers> papersList = papersMapper.selectList(new QueryWrapper<>());
-        PaperResultDto dto = new PaperResultDto();
         List<PaperResultDto> dtoList = new ArrayList<>();
         for (Papers paper : papersList) {
+            PaperResultDto dto = new PaperResultDto();
             BeanUtils.copyProperties(paper, dto);
             dtoList.add(dto);
         }
