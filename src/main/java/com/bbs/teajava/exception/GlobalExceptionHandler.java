@@ -53,7 +53,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(AccessDeniedException.class)
     public ApiResultUtils handleAccessDeniedException(AccessDeniedException e) {
         log.warn("权限不足: {}", e.getMessage());
-        return ApiResultUtils.error(403, "权限不足");
+        return ApiResultUtils.error(403, e.getMessage());
     }
 
     // 处理资源未找到

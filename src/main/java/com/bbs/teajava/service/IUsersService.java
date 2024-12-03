@@ -87,4 +87,12 @@ public interface IUsersService extends IService<Users> {
      * @return 用户信息
      */
     UserResultDto getInfo();
+
+    /**
+     * 禁言
+     * @param userId 用户id
+     * @param dateTime 禁言时间
+     * @return 禁言结果
+     */
+    ApiResultUtils mute(Integer userId, String datetime);
 }

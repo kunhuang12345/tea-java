@@ -86,4 +86,12 @@ public class UsersController {
         return usersService.userAlterPassword(email, oldPassword, newPassword);
     }
 
+    @RequestMapping(value = "Mute", method = {RequestMethod.POST})
+    @ApiOperation("用户禁言 传入时间格式: yyyy-MM-dd HH:mm")
+    @Authentication(requireAdmin = true)
+    public ApiResultUtils mute(@RequestParam(value = "userId") Integer userId,
+                                   @RequestParam(value = "datetime") String datetime) {
+        return usersService.mute(userId, datetime);
+    }
+
 }
