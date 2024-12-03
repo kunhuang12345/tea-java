@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 /**
  * <p>
- * 论文状态统计表 前端控制器
+ * 论文状态统计表
  * </p>
  *
  * @author hk

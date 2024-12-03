@@ -70,6 +70,7 @@ public class PapersServiceImpl extends ServiceImpl<PapersMapper, Papers> impleme
         paper.setFile(String.valueOf(attachmentTag));
         paper.setConference(conference);
         paper.setReporterId(user.getId());
+        Integer id = paperId;
         if (paperId != null) {
             paper.setId(paperId);
             int updated = papersMapper.updateById(paper);
@@ -78,7 +79,7 @@ public class PapersServiceImpl extends ServiceImpl<PapersMapper, Papers> impleme
                 return ApiResultUtils.error(500, "更新失败");
             }
         } else {
-            papersMapper.insert(paper);
+            id = papersMapper.insert(paper);
         }
         try {
             if (AttachmentTagEnum.EXIST.getValue() == attachmentTag) {
@@ -110,7 +111,7 @@ public class PapersServiceImpl extends ServiceImpl<PapersMapper, Papers> impleme
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             return ApiResultUtils.error(500, "论文上传失败");
         }
-        return ApiResultUtils.success();
+        return ApiResultUtils.success(id);
     }
 
     @Override

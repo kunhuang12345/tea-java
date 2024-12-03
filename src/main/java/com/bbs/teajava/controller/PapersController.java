@@ -26,7 +26,7 @@ public class PapersController {
     private final IPapersService papersService;
 
     @RequestMapping(value = "/GetAllPapers", method = {RequestMethod.GET, RequestMethod.POST})
-    @ApiOperation("获取所有论文")
+    @ApiOperation("获取所有论文，注意返回值的file标识是否存在附件")
     public ApiResultUtils getAllPapers() {
         return ApiResultUtils.success(papersService.getAllPapers());
     }
@@ -41,7 +41,7 @@ public class PapersController {
     @RequestMapping(value = "GetUserPaperListByPage", method = {RequestMethod.GET, RequestMethod.POST})
     @ApiOperation("分页获取用户论文列表")
     public ApiResultUtils getUserPaperListByPage(@RequestParam(value = "page", required = false, defaultValue = "1") Integer page,
-                                                  @RequestParam(value = "pageSize", required = false, defaultValue = "10") Integer pageSize,
+                                                 @RequestParam(value = "pageSize", required = false, defaultValue = "10") Integer pageSize,
                                                  @RequestParam(value = "userId") Integer userId) {
         return ApiResultUtils.success(papersService.getUserPaperListByPage(page, pageSize, userId));
     }
