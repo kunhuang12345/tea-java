@@ -19,4 +19,8 @@ public class PaperResultDto {
 
     private String file;
 
+    private String paperPath;
+
+    private String attachmentPath;
+
 }
