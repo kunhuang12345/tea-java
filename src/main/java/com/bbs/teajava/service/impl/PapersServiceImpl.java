@@ -110,7 +110,7 @@ public class PapersServiceImpl extends ServiceImpl<PapersMapper, Papers> impleme
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             return ApiResultUtils.error(500, "论文上传失败");
         }
-        return ApiResultUtils.success();
+        return ApiResultUtils.success(paper.getId());
     }
 
     @Override
