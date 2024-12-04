@@ -40,14 +40,14 @@ public class UsersController {
     }
 
     @RequestMapping(value = "GetInfoById", method = {RequestMethod.GET, RequestMethod.POST})
-    @ApiOperation("获取用户信息")
+    @ApiOperation("获取用户id用户信息")
     @Authentication
     public ApiResultUtils getInfoById(@RequestParam("id") Integer id) {
         return usersService.getInfoById(id);
     }
 
     @RequestMapping(value = "GetInfoByEmail", method = {RequestMethod.GET, RequestMethod.POST})
-    @ApiOperation("获取用户信息")
+    @ApiOperation("通过邮箱获取用户信息")
     @Authentication
     public ApiResultUtils getInfoById(@RequestParam("email") String email) {
         return usersService.getInfoByEmail(email);

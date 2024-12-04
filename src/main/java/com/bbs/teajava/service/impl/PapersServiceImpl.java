@@ -214,13 +214,13 @@ public class PapersServiceImpl extends ServiceImpl<PapersMapper, Papers> impleme
     }
 
     @Override
-    public ApiResultUtils attachAuthor(Integer paperId, Integer userId) {
-        Users user = usersMapper.selectById(userId);
+    public ApiResultUtils attachAuthor(Integer paperId, String ids) {
+        Users user = usersMapper.selectById(ids);
         if (user == null) {
             return ApiResultUtils.error(500, "用户不存在");
         }
         Papers paper = papersMapper.selectById(paperId);
-        paper.setAttachAuthor(paper.getAttachAuthor() + "," + userId);
+        paper.setAttachAuthor(ids);
         int update = papersMapper.updateById(paper);
         return ApiResultUtils.success(update);
     }

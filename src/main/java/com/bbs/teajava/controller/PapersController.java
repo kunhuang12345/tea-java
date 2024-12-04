@@ -81,8 +81,8 @@ public class PapersController {
     @PostMapping(value = "AttachAuthor")
     @ApiOperation("为论文添加作者")
     @Authentication(requireAdmin = true)
-    public ApiResultUtils attachAuthor(@RequestParam(value = "paperId") Integer paperId, Integer userId) {
-        return papersService.attachAuthor(paperId, userId);
+    public ApiResultUtils attachAuthor(@RequestParam(value = "paperId") Integer paperId, String ids) {
+        return papersService.attachAuthor(paperId, ids);
     }
 
     @RequestMapping(value = "Download", method = {RequestMethod.GET, RequestMethod.POST})
