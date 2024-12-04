@@ -291,5 +291,13 @@ public class UsersServiceImpl extends ServiceImpl<UsersMapper, Users> implements
         return ApiResultUtils.success("success");
     }
 
+    @Override
+    public ApiResultUtils getInfoById(Integer id) {
+        Users user = usersMapper.selectById(id);
+        UserResultDto dto = new UserResultDto();
+        BeanUtils.copyProperties(user, dto);
+        return ApiResultUtils.success(dto);
+    }
+
 
 }

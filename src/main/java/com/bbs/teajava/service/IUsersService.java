@@ -95,4 +95,11 @@ public interface IUsersService extends IService<Users> {
      * @return 禁言结果
      */
     ApiResultUtils mute(Integer userId, String datetime);
+
+    /**
+     * 根据id获取用户信息
+     *
+     * @return 用户dto
+     */
+    ApiResultUtils getInfoById(Integer id);
 }

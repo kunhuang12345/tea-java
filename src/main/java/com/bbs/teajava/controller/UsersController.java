@@ -39,6 +39,13 @@ public class UsersController {
         return ApiResultUtils.success(usersService.getInfo());
     }
 
+    @RequestMapping(value = "GetInfoById", method = {RequestMethod.GET, RequestMethod.POST})
+    @ApiOperation("获取用户信息")
+    @Authentication
+    public ApiResultUtils getInfoById(@RequestParam("id") Integer id) {
+        return usersService.getInfoById(id);
+    }
+
     @RequestMapping(value = "SendEmailCode", method = {RequestMethod.POST})
     @ApiOperation("发送邮件验证码")
     public ApiResultUtils sendEmailCode(@RequestParam(value = "targetEmail") String targetEmail,
@@ -47,6 +54,8 @@ public class UsersController {
                                         @RequestParam(value = "content") String content) {
         return usersService.sendEmailCode(targetEmail, imageCode, subject, content);
     }
+
+
 
     @RequestMapping(value = "GetImageCode", method = {RequestMethod.GET, RequestMethod.POST})
     @ApiOperation("获取图片验证码")
