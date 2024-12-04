@@ -44,25 +44,7 @@ public class FriendRequestsServiceImpl extends ServiceImpl<FriendRequestsMapper,
         if (friendInfo == null) {
             return ApiResultUtils.error(500, "该用户不存在");
         }
-        Users user = SessionUtils.getUser();
-        QueryWrapper<FriendRequests> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("from_user_id", user.getId()).eq("to_user_id", friendId);
-        FriendRequests friendRequestResult = friendRequestsMapper.selectOne(queryWrapper);
-        FriendRequests friendRequests = new FriendRequests();
-        if (friendRequestResult != null) {
-            friendRequests.setId(friendRequestResult.getId());
-        }
-        friendRequests.setFromUserId(user.getId());
-        friendRequests.setToUserId(friendId);
-        friendRequests.setMessage(message);
-        friendRequests.setStatus(FriendRequestStatusEnum.PENDING.getValue());
-        friendRequests.setCreateTime(LocalDateTime.now());
-        if (friendRequestResult == null) {
-            friendRequestsMapper.insert(friendRequests);
-        } else {
-            friendRequestsMapper.updateById(friendRequests);
-        }
-        return ApiResultUtils.success();
+        return this.addFriend(friendId, message);
     }
 
     @Override
@@ -104,6 +86,38 @@ public class FriendRequestsServiceImpl extends ServiceImpl<FriendRequestsMapper,
             log.error(e.getMessage(), e);
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             return ApiResultUtils.error(500, "添加好友失败");
+        }
+        return ApiResultUtils.success();
+    }
+
+    @Override
+    public ApiResultUtils applyFriendByEmail(Integer email, String message) {
+
+        Users friendInfo = usersMapper.selectOne(new QueryWrapper<Users>().eq("email", email));
+        if (friendInfo == null) {
+            return ApiResultUtils.error(500, "该用户不存在");
+        }
+        return this.addFriend(friendInfo.getId(), message);
+    }
+
+    private ApiResultUtils addFriend(Integer friendId, String message) {
+        Users user = SessionUtils.getUser();
+        QueryWrapper<FriendRequests> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("from_user_id", user.getId()).eq("to_user_id", friendId);
+        FriendRequests friendRequestResult = friendRequestsMapper.selectOne(queryWrapper);
+        FriendRequests friendRequests = new FriendRequests();
+        if (friendRequestResult != null) {
+            friendRequests.setId(friendRequestResult.getId());
+        }
+        friendRequests.setFromUserId(user.getId());
+        friendRequests.setToUserId(friendId);
+        friendRequests.setMessage(message);
+        friendRequests.setStatus(FriendRequestStatusEnum.PENDING.getValue());
+        friendRequests.setCreateTime(LocalDateTime.now());
+        if (friendRequestResult == null) {
+            friendRequestsMapper.insert(friendRequests);
+        } else {
+            friendRequestsMapper.updateById(friendRequests);
         }
         return ApiResultUtils.success();
     }

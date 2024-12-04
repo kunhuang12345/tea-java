@@ -6,11 +6,7 @@ import com.bbs.teajava.service.IFriendRequestsService;
 import com.bbs.teajava.utils.ApiResultUtils;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.RequestMapping;
-
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * <p>
@@ -27,13 +23,24 @@ public class FriendRequestsController {
 
     private final IFriendRequestsService friendRequestsService;
 
-    @RequestMapping(value = "ApplyFriend", method = {RequestMethod.POST})
+    @PostMapping(value = "ApplyFriend")
     @ApiOperation("添加好友")
     @Authentication
     public ApiResultUtils applyFriend(@RequestParam(value = "friendId") Integer friendId,
                                       @RequestParam(value = "message", required = false) String message) {
         return friendRequestsService.applyFriend(friendId, message);
     }
+
+    @PostMapping(value = "ApplyFriendByEmail")
+    @ApiOperation("通过邮箱添加好友")
+    @Authentication
+    public ApiResultUtils applyFriendByEmail(@RequestParam(value = "email") Integer email,
+                                      @RequestParam(value = "message", required = false) String message) {
+        return friendRequestsService.applyFriendByEmail(email, message);
+    }
+
+
+
 
     @RequestMapping(value = "GetApplyFriendList", method = {RequestMethod.GET, RequestMethod.POST})
     @ApiOperation("获取好友申请列表")
@@ -49,7 +56,7 @@ public class FriendRequestsController {
         return ApiResultUtils.success(friendRequestsService.getReceivedApplyList());
     }
 
-    @RequestMapping(value = "HandleFriendApply", method = {RequestMethod.POST})
+    @PostMapping(value = "HandleFriendApply")
     @ApiOperation("处理好友申请 status: 1-同意 2-拒绝")
     @Authentication
     public ApiResultUtils handleFriendApply(@RequestParam(value = "applyId") Integer applyId,

@@ -18,7 +18,7 @@ import java.util.List;
 public interface IFriendRequestsService extends IService<FriendRequests> {
 
     /**
-     * 申请好用
+     * 申请好友
      *
      * @param friendId 好友ID
      * @param message 申请信息
@@ -50,4 +50,14 @@ public interface IFriendRequestsService extends IService<FriendRequests> {
      * @return 接口结果
      */
     ApiResultUtils handleFriendApply(Integer applyId, Integer status);
+
+
+    /**
+     * 通过邮箱申请好友
+     *
+     * @param email 好友邮箱
+     * @param message 申请信息
+     * @return 接口结果
+     */
+    ApiResultUtils applyFriendByEmail(Integer email, String message);
 }
