@@ -72,12 +72,19 @@ public class PapersServiceImpl extends ServiceImpl<PapersMapper, Papers> impleme
         paper.setReporterId(user.getId());
         if (paperId != null) {
             paper.setId(paperId);
+            if (paperFile != null) {
+                paper.setFileSize(paperFile.getSize() + "bytes");
+            }
             int updated = papersMapper.updateById(paper);
             if (updated == 0) {
                 TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
                 return ApiResultUtils.error(500, "更新失败");
             }
         } else {
+            if (paperFile == null) {
+                return new ApiResultUtils(500, "请上传文件");
+            }
+            paper.setFileSize(paperFile.getSize() + "bytes");
             papersMapper.insert(paper);
         }
         try {

@@ -1,9 +1,6 @@
 package com.bbs.teajava.entity;
 
-import com.baomidou.mybatisplus.annotation.TableLogic;
-import com.baomidou.mybatisplus.annotation.TableName;
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.*;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -38,6 +35,9 @@ public class Papers implements Serializable {
     private String conference;
 
     private String file;
+
+    @TableField("file_size")
+    private String fileSize;
 
     private Integer reporterId;
 

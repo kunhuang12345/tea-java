@@ -46,13 +46,13 @@ public class PapersController {
         return ApiResultUtils.success(papersService.getUserPaperListByPage(page, pageSize, userId));
     }
 
-    @RequestMapping(value = "SavePapers", method = {RequestMethod.POST})
+    @PostMapping(value = "SavePapers")
     @ApiOperation("新增/修改论文, 修改论文需要传入论文id，是否存在附件: 0: 不存在, 1: 存在")
     @Authentication(requireReporter = true)
     public ApiResultUtils savePapers(@RequestParam(value = "paperId", required = false) Integer paperId,
                                      @RequestParam(value = "title") String title,
                                      @RequestParam(value = "conference") String conference,
-                                     @RequestParam(value = "paperFile") MultipartFile paperFile,
+                                     @RequestParam(value = "paperFile", required = false) MultipartFile paperFile,
                                      @RequestParam(value = "attachmentTag") Integer attachmentTag) {
         return papersService.savePapers(paperId, title, conference, paperFile, attachmentTag);
     }
@@ -64,14 +64,14 @@ public class PapersController {
     }
 
 
-    @RequestMapping(value = "UploadTempFile", method = {RequestMethod.POST})
+    @PostMapping(value = "UploadTempFile")
     @ApiOperation("上传论文附件临时文件")
     @Authentication(requireReporter = true)
     public ApiResultUtils uploadTempFile(@RequestParam(value = "attachment") MultipartFile attachment) {
         return papersService.uploadTempFile(attachment);
     }
 
-    @RequestMapping(value = "DeletePaper", method = {RequestMethod.POST})
+    @PostMapping(value = "DeletePaper")
     @ApiOperation("删除论文")
     @Authentication
     public ApiResultUtils deletePaper(@RequestParam(value = "paperId") Integer paperId) {
