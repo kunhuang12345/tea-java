@@ -50,8 +50,8 @@ public class CommentsServiceImpl extends ServiceImpl<CommentsMapper, Comments> i
         comments.setUserId(SessionUtils.getUser().getId());
         comments.setPaperId(paperId);
         comments.setContent(content);
-        int insert = commentsMapper.insert(comments);
-        return ApiResultUtils.success(insert);
+        commentsMapper.insert(comments);
+        return ApiResultUtils.success(content);
     }
 
     @Override
@@ -66,8 +66,8 @@ public class CommentsServiceImpl extends ServiceImpl<CommentsMapper, Comments> i
         comments.setUserId(SessionUtils.getUser().getId());
         comments.setPaperId(paperId);
         comments.setContent(content);
-        int insert = commentsMapper.insert(comments);
-        return ApiResultUtils.success(insert);
+        commentsMapper.insert(comments);
+        return ApiResultUtils.success(content);
     }
 
     @Override
