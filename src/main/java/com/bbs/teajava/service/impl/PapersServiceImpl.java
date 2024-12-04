@@ -28,6 +28,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -72,6 +73,7 @@ public class PapersServiceImpl extends ServiceImpl<PapersMapper, Papers> impleme
         paper.setFile(String.valueOf(attachmentTag));
         paper.setConference(conference);
         paper.setReporterId(user.getId());
+        paper.setCreateTime(LocalDateTime.now());
         if (paperId != null) {
             paper.setId(paperId);
             if (paperFile != null) {

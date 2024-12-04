@@ -48,6 +48,11 @@ public class Papers implements Serializable {
     @TableField("attach_author")
     private String attachAuthor;
 
+    @TableField("create_time")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    private LocalDateTime createTime;
+
     @TableLogic
     private Integer deleted;
 
