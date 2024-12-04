@@ -1,13 +1,11 @@
 package com.bbs.teajava.entity;
 
-import com.baomidou.mybatisplus.annotation.TableLogic;
-import com.baomidou.mybatisplus.annotation.TableName;
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.*;
 import lombok.Data;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.time.LocalDateTime;
 
 /**
  * <p>
@@ -34,6 +32,9 @@ public class Comments implements Serializable {
     private Integer paperId;
 
     private String content;
+
+    @TableField("create_at")
+    private LocalDateTime createAt;
 
     @TableLogic
     private Integer deleted;

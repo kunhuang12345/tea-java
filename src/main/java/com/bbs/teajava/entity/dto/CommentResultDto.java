@@ -4,6 +4,7 @@ import com.bbs.teajava.entity.Comments;
 import lombok.Data;
 import org.springframework.beans.BeanUtils;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,6 +18,7 @@ public class CommentResultDto {
     private Integer userId;
     private String content;
     private Integer deleted;
+    private LocalDateTime createAt;
     private List<CommentResultDto> children;
 
     public static List<CommentResultDto> convertFromComments(List<Comments> commentList) {

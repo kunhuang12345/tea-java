@@ -17,6 +17,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -50,6 +51,7 @@ public class CommentsServiceImpl extends ServiceImpl<CommentsMapper, Comments> i
         comments.setUserId(SessionUtils.getUser().getId());
         comments.setPaperId(paperId);
         comments.setContent(content);
+        comments.setCreateAt(LocalDateTime.now());
         commentsMapper.insert(comments);
         return ApiResultUtils.success(content);
     }
@@ -66,6 +68,7 @@ public class CommentsServiceImpl extends ServiceImpl<CommentsMapper, Comments> i
         comments.setUserId(SessionUtils.getUser().getId());
         comments.setPaperId(paperId);
         comments.setContent(content);
+        comments.setCreateAt(LocalDateTime.now());
         commentsMapper.insert(comments);
         return ApiResultUtils.success(content);
     }

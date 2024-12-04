@@ -29,7 +29,7 @@ public interface ICommentsService extends IService<Comments> {
     /**
      * 添加子评论
      *
-     * @param paperId
+     * @param paperId 论文id
      * @param pid     父评论id
      * @param content 子评论内容
      * @return 添加结果
