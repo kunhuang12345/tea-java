@@ -45,6 +45,9 @@ public class Papers implements Serializable {
 
     private String attachmentPath;
 
+    @TableField("attach_author")
+    private String attachAuthor;
+
     @TableLogic
     private Integer deleted;
 

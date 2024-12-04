@@ -25,4 +25,5 @@ public class PaperResultDto {
 
     private String attachmentPath;
 
+    private String attachAuthor;
 }

@@ -93,4 +93,13 @@ public interface IPapersService extends IService<Papers> {
      * @return 分页查询结果
      */
     IPage<PaperResultDto> getUserPaperListByPage(Integer page, Integer pageSize, Integer userId);
+
+    /**
+     * 为论文添加作者
+     *
+     * @param paperId 论文id
+     * @param userId 用户id
+     * @return 添加结果
+     */
+    ApiResultUtils attachAuthor(Integer paperId, Integer userId);
 }
