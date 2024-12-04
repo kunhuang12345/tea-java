@@ -102,4 +102,11 @@ public interface IUsersService extends IService<Users> {
      * @return 用户dto
      */
     ApiResultUtils getInfoById(Integer id);
+
+    /**
+     *  根据用户邮箱获取用户信息
+     * @param email 邮箱
+     * @return 用户信息
+     */
+    ApiResultUtils getInfoByEmail(String email);
 }

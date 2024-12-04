@@ -299,5 +299,11 @@ public class UsersServiceImpl extends ServiceImpl<UsersMapper, Users> implements
         return ApiResultUtils.success(dto);
     }
 
+    @Override
+    public ApiResultUtils getInfoByEmail(String email) {
+        Users user = usersMapper.selectOne(new QueryWrapper<Users>().eq("email", email));
+        return ApiResultUtils.success(user);
+    }
+
 
 }

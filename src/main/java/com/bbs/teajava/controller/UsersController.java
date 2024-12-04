@@ -46,6 +46,15 @@ public class UsersController {
         return usersService.getInfoById(id);
     }
 
+    @RequestMapping(value = "GetInfoByEmail", method = {RequestMethod.GET, RequestMethod.POST})
+    @ApiOperation("获取用户信息")
+    @Authentication
+    public ApiResultUtils getInfoById(@RequestParam("email") String email) {
+        return usersService.getInfoByEmail(email);
+    }
+
+
+
     @RequestMapping(value = "SendEmailCode", method = {RequestMethod.POST})
     @ApiOperation("发送邮件验证码")
     public ApiResultUtils sendEmailCode(@RequestParam(value = "targetEmail") String targetEmail,
