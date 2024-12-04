@@ -73,9 +73,9 @@ public class PapersServiceImpl extends ServiceImpl<PapersMapper, Papers> impleme
         paper.setFile(String.valueOf(attachmentTag));
         paper.setConference(conference);
         paper.setReporterId(user.getId());
-        paper.setCreateTime(LocalDateTime.now());
         if (paperId != null) {
             paper.setId(paperId);
+            paper.setUpdateTime(LocalDateTime.now());
             if (paperFile != null) {
                 paper.setFileSize(paperFile.getSize() + "bytes");
             }
@@ -89,6 +89,7 @@ public class PapersServiceImpl extends ServiceImpl<PapersMapper, Papers> impleme
                 return new ApiResultUtils(500, "请上传文件");
             }
             paper.setFileSize(paperFile.getSize() + "bytes");
+            paper.setCreateTime(LocalDateTime.now());
             papersMapper.insert(paper);
         }
         try {
