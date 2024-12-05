@@ -30,6 +30,7 @@ import java.util.List;
 public class PaperAuthorImpl extends ServiceImpl<PaperAuthorMapper, PaperAuthor> implements IPaperAuthorService {
 
     private final IUsersService userService;
+    private final PaperAuthorMapper paperAuthorMapper;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
