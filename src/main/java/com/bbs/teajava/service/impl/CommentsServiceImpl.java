@@ -53,7 +53,7 @@ public class CommentsServiceImpl extends ServiceImpl<CommentsMapper, Comments> i
         comments.setContent(content);
         comments.setCreateAt(LocalDateTime.now());
         commentsMapper.insert(comments);
-        return ApiResultUtils.success(content);
+        return ApiResultUtils.success(comments.getId());
     }
 
     @Override
@@ -70,7 +70,7 @@ public class CommentsServiceImpl extends ServiceImpl<CommentsMapper, Comments> i
         comments.setContent(content);
         comments.setCreateAt(LocalDateTime.now());
         commentsMapper.insert(comments);
-        return ApiResultUtils.success(content);
+        return ApiResultUtils.success(comments.getId());
     }
 
     @Override
