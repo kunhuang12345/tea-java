@@ -113,12 +113,14 @@ public class PapersServiceImpl extends ServiceImpl<PapersMapper, Papers> impleme
                 paper.setAttachmentPath(attachmentPath);
             }
 
-            minio.uploadFile(
-                    BucketNameEnum.PAPER.getValue(), // 桶名
-                    FilePathUtils.paperPath(user.getEmail(), FileNameUtils.paper(paperFile.getOriginalFilename(), String.valueOf(paper.getId()))), // 文件路径
-                    paperFile.getInputStream() // 文件流
-            );
-            paper.setPaperPath(FilePathUtils.paperPath(user.getEmail(), FileNameUtils.paper(paperFile.getOriginalFilename(), String.valueOf(paper.getId()))));
+            if (paperFile != null) {
+                minio.uploadFile(
+                        BucketNameEnum.PAPER.getValue(), // 桶名
+                        FilePathUtils.paperPath(user.getEmail(), FileNameUtils.paper(paperFile.getOriginalFilename(), String.valueOf(paper.getId()))), // 文件路径
+                        paperFile.getInputStream() // 文件流
+                );
+                paper.setPaperPath(FilePathUtils.paperPath(user.getEmail(), FileNameUtils.paper(paperFile.getOriginalFilename(), String.valueOf(paper.getId()))));
+            }
             papersMapper.updateById(paper);
         } catch (Exception e) {
             logger.error("上传论文失败", e);
