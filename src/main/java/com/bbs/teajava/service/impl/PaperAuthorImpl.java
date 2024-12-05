@@ -11,6 +11,7 @@ import com.bbs.teajava.utils.ApiResultUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.aop.framework.AopContext;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,8 +29,6 @@ import java.util.List;
 @Slf4j
 public class PaperAuthorImpl extends ServiceImpl<PaperAuthorMapper, PaperAuthor> implements IPaperAuthorService {
 
-    @Lazy
-    private final IPaperAuthorService paperAuthorService;
     private final IUsersService userService;
 
     @Override
@@ -44,7 +43,8 @@ public class PaperAuthorImpl extends ServiceImpl<PaperAuthorMapper, PaperAuthor>
                 paperAuthor.setUserId(userId);
                 paperAuthorList.add(paperAuthor);
             }
-            paperAuthorService.saveBatch(paperAuthorList);
+            IPaperAuthorService proxy = (PaperAuthorImpl)AopContext.currentProxy();
+            proxy.saveBatch(paperAuthorList);
             return ApiResultUtils.success(userIdList);
         } catch (Exception e) {
             log.error(e.getMessage(), e);
