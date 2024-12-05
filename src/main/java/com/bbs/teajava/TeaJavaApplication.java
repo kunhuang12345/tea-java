@@ -9,7 +9,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 /**
  * @author kunhuang
  */
-@EnableAspectJAutoProxy
+@EnableAspectJAutoProxy(exposeProxy = true)
 @SpringBootApplication
 @EnableScheduling  // 开启定时任务
 @MapperScan("com.bbs.teajava.mapper")
