@@ -222,7 +222,10 @@ public class PapersServiceImpl extends ServiceImpl<PapersMapper, Papers> impleme
     public IPage<PaperResultDto> getUserPaperListByPage(Integer page, Integer pageSize, Integer userId) {
         List<PaperAuthor> paperAuthorList = paperAuthorService.list(new QueryWrapper<PaperAuthor>().eq("user_id", userId));
         List<Integer> list = paperAuthorList.stream().filter(Objects::nonNull).map(PaperAuthor::getPaperId).toList();
-        return this.getPaperListByPage(page, pageSize, new QueryWrapper<Papers>().in("id", CollectionUtils.isEmpty(list) ? new ArrayList<>() : list));
+        if (CollectionUtils.isEmpty(list)) {
+            return new Page<>();
+        }
+        return this.getPaperListByPage(page, pageSize, new QueryWrapper<Papers>().in("id", list));
     }
 
     @Override
