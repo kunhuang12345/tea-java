@@ -59,5 +59,5 @@ public interface IFriendRequestsService extends IService<FriendRequests> {
      * @param message 申请信息
      * @return 接口结果
      */
-    ApiResultUtils applyFriendByEmail(Integer email, String message);
+    ApiResultUtils applyFriendByEmail(String email, String message);
 }

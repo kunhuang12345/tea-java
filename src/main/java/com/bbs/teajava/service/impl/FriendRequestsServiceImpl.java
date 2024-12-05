@@ -91,8 +91,7 @@ public class FriendRequestsServiceImpl extends ServiceImpl<FriendRequestsMapper,
     }
 
     @Override
-    public ApiResultUtils applyFriendByEmail(Integer email, String message) {
-
+    public ApiResultUtils applyFriendByEmail(String email, String message) {
         Users friendInfo = usersMapper.selectOne(new QueryWrapper<Users>().eq("email", email));
         if (friendInfo == null) {
             return ApiResultUtils.error(500, "该用户不存在");

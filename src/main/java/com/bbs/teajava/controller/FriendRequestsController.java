@@ -34,7 +34,7 @@ public class FriendRequestsController {
     @PostMapping(value = "ApplyFriendByEmail")
     @ApiOperation("通过邮箱添加好友")
     @Authentication
-    public ApiResultUtils applyFriendByEmail(@RequestParam(value = "email") Integer email,
+    public ApiResultUtils applyFriendByEmail(@RequestParam(value = "email") String email,
                                       @RequestParam(value = "message", required = false) String message) {
         return friendRequestsService.applyFriendByEmail(email, message);
     }
