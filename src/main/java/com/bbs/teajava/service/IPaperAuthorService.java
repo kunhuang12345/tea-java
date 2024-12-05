@@ -23,4 +23,12 @@ public interface IPaperAuthorService extends IService<PaperAuthor> {
      * @return 添加结果
      */
     ApiResultUtils add(Integer paperId, String userIds);
+
+    /**
+     * 通过论文id查询作者
+     *
+     * @param paperId 论文id
+     * @return 作者结果集
+     */
+    ApiResultUtils getAuthorList(Integer paperId);
 }
