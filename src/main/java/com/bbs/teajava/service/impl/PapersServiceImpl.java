@@ -33,7 +33,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -223,10 +222,7 @@ public class PapersServiceImpl extends ServiceImpl<PapersMapper, Papers> impleme
     public IPage<PaperResultDto> getUserPaperListByPage(Integer page, Integer pageSize, Integer userId) {
         List<PaperAuthor> paperAuthorList = paperAuthorService.list(new QueryWrapper<PaperAuthor>().eq("user_id", userId));
         List<Integer> list = paperAuthorList.stream().filter(Objects::nonNull).map(PaperAuthor::getPaperId).toList();
-        return this.getPaperListByPage(
-                page,
-                pageSize,
-                new QueryWrapper<Papers>().in("id", CollectionUtils.isEmpty(list) ? new ArrayList<>() : list));
+        return this.getPaperListByPage(page, pageSize, new QueryWrapper<Papers>().in("id", CollectionUtils.isEmpty(list) ? new ArrayList<>() : list));
     }
 
     @Override
