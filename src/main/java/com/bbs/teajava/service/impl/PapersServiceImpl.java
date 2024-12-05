@@ -7,11 +7,13 @@ import com.bbs.teajava.constants.AttachmentTagEnum;
 import com.bbs.teajava.constants.BucketNameEnum;
 import com.bbs.teajava.constants.PaperDownloadTypeEnum;
 import com.bbs.teajava.constants.RoleEnum;
+import com.bbs.teajava.entity.PaperAuthor;
 import com.bbs.teajava.entity.Papers;
 import com.bbs.teajava.entity.Users;
 import com.bbs.teajava.entity.dto.PaperResultDto;
 import com.bbs.teajava.mapper.PapersMapper;
 import com.bbs.teajava.mapper.UsersMapper;
+import com.bbs.teajava.service.IPaperAuthorService;
 import com.bbs.teajava.service.IPaperStatusService;
 import com.bbs.teajava.service.IPapersService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -46,6 +48,7 @@ public class PapersServiceImpl extends ServiceImpl<PapersMapper, Papers> impleme
     private final PapersMapper papersMapper;
     private final MinioUtil minio;
     private final IPaperStatusService paperStatusService;
+    private final IPaperAuthorService paperAuthorService;
     private final UsersMapper usersMapper;
 
     Logger logger = LoggerFactory.getLogger(PapersServiceImpl.class);
@@ -213,7 +216,9 @@ public class PapersServiceImpl extends ServiceImpl<PapersMapper, Papers> impleme
 
     @Override
     public IPage<PaperResultDto> getUserPaperListByPage(Integer page, Integer pageSize, Integer userId) {
-        return this.getPaperListByPage(page, pageSize, new QueryWrapper<Papers>().eq("reporter_id", userId));
+        List<PaperAuthor> paperAuthorList = paperAuthorService.list(new QueryWrapper<PaperAuthor>().eq("user_id", userId));
+        List<Integer> list = paperAuthorList.stream().map(PaperAuthor::getPaperId).toList();
+        return this.getPaperListByPage(page, pageSize, new QueryWrapper<Papers>().in("id", list));
     }
 
     @Override
