@@ -5,10 +5,7 @@ import com.bbs.teajava.service.IPaperAuthorService;
 import com.bbs.teajava.utils.ApiResultUtils;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * @author kunhuang
@@ -23,9 +20,17 @@ public class PaperAuthorController {
     @PostMapping(value = "/Add")
     @ApiOperation("添加论文作者, userIds以逗号分隔")
     @Authentication(requireAdmin = true)
-    public ApiResultUtils add (@RequestParam(value = "paperId")Integer paperId,
-                               @RequestParam(value = "userIds") String userIds) {
+    public ApiResultUtils add(@RequestParam(value = "paperId") Integer paperId,
+                              @RequestParam(value = "userIds") String userIds) {
         return paperAuthorService.add(paperId, userIds);
     }
+
+    @GetMapping(value = "/GetAuthorList")
+    @ApiOperation("通过论文id查询作者信息")
+    @Authentication(requireAdmin = true)
+    public ApiResultUtils getAuthorList(@RequestParam(value = "paperId") Integer paperId) {
+        return paperAuthorService.getAuthorList(paperId);
+    }
+
 
 }
