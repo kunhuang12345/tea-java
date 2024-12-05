@@ -152,7 +152,7 @@ public class PapersServiceImpl extends ServiceImpl<PapersMapper, Papers> impleme
         }
         try {
             minio.deleteFile(BucketNameEnum.PAPER.getValue(), paper.getPaperPath());
-            if (paper.getPaperPath() != null) {
+            if (paper.getAttachmentPath() != null) {
                 minio.deleteFile(BucketNameEnum.ATTACHMENT.getValue(), paper.getAttachmentPath());
             }
         } catch (Exception e) {
