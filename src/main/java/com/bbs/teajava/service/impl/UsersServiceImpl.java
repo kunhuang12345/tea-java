@@ -285,7 +285,7 @@ public class UsersServiceImpl extends ServiceImpl<UsersMapper, Users> implements
         LocalDateTime time = LocalDateTime.parse(datetime, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
         long minutes = Duration.between(LocalDateTime.now(), time).toMinutes();
         if (minutes < 0) {
-            return ApiResultUtils.error(400, "时间选择错误");
+            redis.delete("mute" + userId);
         }
         redis.set("mute" + userId, "1", minutes, TimeUnit.MINUTES);
         return ApiResultUtils.success("success");
