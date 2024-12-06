@@ -26,6 +26,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -33,6 +34,7 @@ import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * <p>
@@ -113,12 +115,14 @@ public class PapersServiceImpl extends ServiceImpl<PapersMapper, Papers> impleme
                 paper.setAttachmentPath(attachmentPath);
             }
 
-            minio.uploadFile(
-                    BucketNameEnum.PAPER.getValue(), // 桶名
-                    FilePathUtils.paperPath(user.getEmail(), FileNameUtils.paper(paperFile.getOriginalFilename(), String.valueOf(paper.getId()))), // 文件路径
-                    paperFile.getInputStream() // 文件流
-            );
-            paper.setPaperPath(FilePathUtils.paperPath(user.getEmail(), FileNameUtils.paper(paperFile.getOriginalFilename(), String.valueOf(paper.getId()))));
+            if (paperFile != null) {
+                minio.uploadFile(
+                        BucketNameEnum.PAPER.getValue(), // 桶名
+                        FilePathUtils.paperPath(user.getEmail(), FileNameUtils.paper(paperFile.getOriginalFilename(), String.valueOf(paper.getId()))), // 文件路径
+                        paperFile.getInputStream() // 文件流
+                );
+                paper.setPaperPath(FilePathUtils.paperPath(user.getEmail(), FileNameUtils.paper(paperFile.getOriginalFilename(), String.valueOf(paper.getId()))));
+            }
             papersMapper.updateById(paper);
         } catch (Exception e) {
             logger.error("上传论文失败", e);
@@ -152,7 +156,7 @@ public class PapersServiceImpl extends ServiceImpl<PapersMapper, Papers> impleme
         }
         try {
             minio.deleteFile(BucketNameEnum.PAPER.getValue(), paper.getPaperPath());
-            if (paper.getPaperPath() != null) {
+            if (paper.getAttachmentPath() != null) {
                 minio.deleteFile(BucketNameEnum.ATTACHMENT.getValue(), paper.getAttachmentPath());
             }
         } catch (Exception e) {
@@ -217,7 +221,10 @@ public class PapersServiceImpl extends ServiceImpl<PapersMapper, Papers> impleme
     @Override
     public IPage<PaperResultDto> getUserPaperListByPage(Integer page, Integer pageSize, Integer userId) {
         List<PaperAuthor> paperAuthorList = paperAuthorService.list(new QueryWrapper<PaperAuthor>().eq("user_id", userId));
-        List<Integer> list = paperAuthorList.stream().map(PaperAuthor::getPaperId).toList();
+        List<Integer> list = paperAuthorList.stream().filter(Objects::nonNull).map(PaperAuthor::getPaperId).toList();
+        if (CollectionUtils.isEmpty(list)) {
+            return new Page<>();
+        }
         return this.getPaperListByPage(page, pageSize, new QueryWrapper<Papers>().in("id", list));
     }
 
